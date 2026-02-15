@@ -7,14 +7,10 @@ const ASSETS = [
   './img/icon.png'
 ];
 
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
-});
-
-self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((res) => res || fetch(e.request))
-  );
-});
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', { scope: './' }) // Paksa scope ke seluruh folder root
+      .then(reg => console.log('SW terdaftar di scope:', reg.scope))
+      .catch(err => console.error('SW gagal daftar:', err));
+  });
+}
