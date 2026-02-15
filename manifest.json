@@ -1,0 +1,16 @@
+{
+  "name": "Shiftku",
+  "short_name": "Shiftku",
+  "description": "Aplikasi Jadwal dan Watermark Alif Rahman",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "img/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
