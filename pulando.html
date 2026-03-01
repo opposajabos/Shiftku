@@ -28,11 +28,10 @@
         .pos-btn { width: 100%; aspect-ratio: 1/1; border-radius: 12px; border: 2px solid #f2f2f7; background: #f2f2f7; font-weight: 800; font-size: 10px; color: #8e8e93; transition: 0.2s; }
         .pos-btn.active { border-color: var(--ios-blue); background: var(--ios-blue); color: white; }
 
-        /* Full Preview Modal */
         #previewModal { background: rgba(0,0,0,0.92); backdrop-filter: blur(20px); align-items: center; justify-content: center; padding: 15px; flex-direction: column; }
         #previewCanvas { max-width: 100%; max-height: 75vh; border-radius: 18px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
         
-        .close-btn-circle { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); color: white; display: flex; items-center; justify-content: center; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); }
+        .close-btn-circle { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); color: white; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); }
 
         .nav-dock { padding-bottom: calc(env(safe-area-inset-bottom) + 10px); }
         input[type="range"] { -webkit-appearance: none; height: 6px; background: #f2f2f7; border-radius: 5px; }
@@ -85,7 +84,6 @@
         <div class="modal-content shadow-2xl">
             <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
             <h2 class="text-xl font-extrabold tracking-tight mb-6">Watermark Styles</h2>
-            
             <div class="space-y-6 pb-12">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -114,14 +112,10 @@
                         </div>
                     </div>
                 </div>
-
                 <div>
-                    <label class="flex justify-between text-[10px] font-black text-gray-400 uppercase mb-2">
-                        Ukuran Teks <span id="sizeVal" class="text-blue-500">3.5%</span>
-                    </label>
+                    <label class="flex justify-between text-[10px] font-black text-gray-400 uppercase mb-2">Ukuran Teks <span id="sizeVal" class="text-blue-500">3.5%</span></label>
                     <input type="range" id="textSize" min="1" max="12" step="0.5" class="w-full" oninput="updateSizeDisplay(this.value)">
                 </div>
-                
                 <button onclick="closeSettings()" class="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl">Terapkan</button>
             </div>
         </div>
@@ -129,9 +123,7 @@
 
     <div id="previewModal" class="modal-overlay">
         <canvas id="previewCanvas"></canvas>
-        <button onclick="closePreview()" class="close-btn-circle mt-10 active:scale-90 transition-transform shadow-xl">
-            <i class="fa-solid fa-xmark text-2xl"></i>
-        </button>
+        <button onclick="closePreview()" class="close-btn-circle mt-10 shadow-xl"><i class="fa-solid fa-xmark text-2xl"></i></button>
     </div>
 
     <canvas id="mainCanvas" class="hidden"></canvas>
@@ -166,12 +158,7 @@
         function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
         function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
         function closeOnOutside(e) { if(e.target.id === 'settingsModal') closeSettings(); }
-
-        function updateSizeDisplay(val) {
-            document.getElementById('sizeVal').innerText = val + '%';
-            saveSettings();
-        }
-
+        function updateSizeDisplay(val) { document.getElementById('sizeVal').innerText = val + '%'; saveSettings(); }
         function setPos(pos) {
             currentPos = pos;
             document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
@@ -184,22 +171,19 @@
             if (files.length > 0) document.getElementById('actionArea').classList.remove('hidden');
             files.forEach(file => {
                 const id = Math.random().toString(36).substr(2, 9);
-                const timeStr = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}).replace('.',':');
-                const fileData = { id, file, time: timeStr, originalHour: new Date().getHours(), reader: new FileReader() };
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}).replace('.',':');
+                const fileData = { id, file, time: timeStr, originalHour: now.getHours(), reader: new FileReader() };
                 fileData.reader.onload = (ev) => {
                     const item = document.createElement('div');
                     item.className = "apple-glass p-3 rounded-2xl flex items-center gap-4 mx-1 animate-slideUp";
                     item.id = `item-${id}`;
                     item.innerHTML = `
-                        <img src="${ev.target.result}" onclick="renderCanvas('${id}', 'previewCanvas')" class="w-16 h-16 object-cover rounded-[14px] shadow-sm">
-                        <div class="flex-1">
-                            <div class="flex justify-between items-center">
-                                <div class="flex flex-col">
-                                    <span class="text-[9px] font-black text-gray-400 uppercase">Set Jam</span>
-                                    <input type="time" class="font-bold text-blue-600 bg-transparent text-lg" value="${timeStr}" onchange="updateTime('${id}', this.value)">
-                                </div>
-                                <button onclick="removeItem('${id}')" class="text-red-400 p-2 active:bg-red-50 rounded-full"><i class="fa-solid fa-trash"></i></button>
-                            </div>
+                        <img src="${ev.target.result}" onclick="renderCanvas('${id}', 'previewCanvas')" class="w-16 h-16 object-cover rounded-[14px] shadow-sm active:scale-95 transition-all">
+                        <div class="flex-1 flex justify-between items-center">
+                            <div class="flex flex-col"><span class="text-[9px] font-black text-gray-400 uppercase">Set Jam</span>
+                            <input type="time" class="font-bold text-blue-600 bg-transparent text-lg" value="${timeStr}" onchange="updateTime('${id}', this.value)"></div>
+                            <button onclick="removeItem('${id}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button>
                         </div>`;
                     document.getElementById('imageList').prepend(item);
                 };
@@ -215,6 +199,14 @@
             if(uploadedFiles.length === 0) document.getElementById('actionArea').classList.add('hidden');
         }
 
+        function getDynamicDate(originalHour, inputTime) {
+            let d = new Date();
+            const [newHour, newMin] = inputTime.split(':').map(Number);
+            if (newHour < originalHour && (originalHour - newHour) > 12) d.setDate(d.getDate() + 1);
+            else if (newHour > originalHour && (newHour - originalHour) > 12) d.setDate(d.getDate() - 1);
+            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
         function renderCanvas(id, targetId) {
             const item = uploadedFiles.find(f => f.id === id);
             const targetCanvas = document.getElementById(targetId);
@@ -225,12 +217,12 @@
                 ctx.drawImage(img, 0, 0);
                 const sets = JSON.parse(localStorage.getItem('pulandoSettings'));
                 const fontSize = img.width * (sets.size / 100);
-                
                 ctx.font = `700 ${fontSize}px '${sets.font}'`;
                 ctx.fillStyle = sets.color;
                 ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = fontSize/1.8;
                 
-                const timeText = `25 Februari 2026 pukul ${item.time.replace(':', '.')}`;
+                const dateText = getDynamicDate(item.originalHour, item.time);
+                const fullText = `${dateText} pukul ${item.time.replace(':', '.')}`;
                 let x = fontSize, y = fontSize * 2; ctx.textAlign = "left";
                 
                 if (sets.pos.includes('c')) { ctx.textAlign = "center"; x = img.width/2; }
@@ -238,11 +230,11 @@
                 if (sets.pos.startsWith('b')) { y = img.height - fontSize; }
 
                 if (sets.pos.startsWith('b')) {
-                    ctx.fillText(timeText, x, y);
+                    ctx.fillText(fullText, x, y);
                     ctx.fillText(sets.area, x, y - (fontSize * 1.3));
                 } else {
                     ctx.fillText(sets.area, x, y);
-                    ctx.fillText(timeText, x, y + (fontSize * 1.3));
+                    ctx.fillText(fullText, x, y + (fontSize * 1.3));
                 }
                 if(targetId === 'previewCanvas') document.getElementById('previewModal').style.display = 'flex';
             };
@@ -254,7 +246,7 @@
         async function processAll() {
             for (const item of uploadedFiles) {
                 renderCanvas(item.id, 'mainCanvas');
-                await new Promise(r => setTimeout(r, 300));
+                await new Promise(r => setTimeout(r, 400));
                 const link = document.createElement('a');
                 link.download = `PULANDO_${item.time.replace(':','')}.jpg`;
                 link.href = document.getElementById('mainCanvas').toDataURL('image/jpeg', 0.9);
