@@ -3,143 +3,522 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Pulando Pro Elite</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&family=Roboto+Mono:wght@700&family=Oswald:wght@700&family=Inter:wght@800&family=Montserrat:wght@900&family=Playfair+Display:ital,wght@1,900&display=swap" rel="stylesheet">
+    <title>Pulando — Shiftku</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <style>
-        :root { --ios-blue: #007AFF; --glass: rgba(255, 255, 255, 0.85); }
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: linear-gradient(180deg, #f2f2f7 0%, #e5e5ea 100%);
-            height: 100dvh; overflow: hidden; display: flex; flex-direction: column; color: #1c1c1e;
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #f3f4f8;
+            background-image: radial-gradient(circle at 20% 30%, rgba(180, 200, 255, 0.3) 0%, transparent 30%),
+                              radial-gradient(circle at 90% 70%, rgba(255, 200, 220, 0.2) 0%, transparent 40%);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            color: #1b1e28;
         }
-        .apple-glass { background: var(--glass); backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.4); }
-        .ios-input { background: rgba(0, 0, 0, 0.05); border: none; border-radius: 14px; padding: 12px 16px; font-weight: 600; font-size: 15px; width: 100%; -webkit-appearance: none; }
+        .glass-morph {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.15);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 12px 40px -12px rgba(0, 30, 60, 0.15);
+        }
+        .blob-soft {
+            background: linear-gradient(145deg, #ffffff, #f0f3fe);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            animation: morph 8s ease-in-out infinite;
+        }
+        @keyframes morph {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+            50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+        }
+        .select-soft {
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 40px;
+            padding: 0.6rem 2.5rem 0.6rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1e293b;
+            outline: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23333'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+        }
+        .select-soft::-ms-expand { display: none; }
+        .select-soft::-moz-focus-inner { border: 0; }
         
-        /* Modal Style */
-        .modal-overlay { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); justify-content: center; align-items: flex-end; }
-        .modal-content { width: 100%; max-height: 85vh; background: white; border-top-left-radius: 35px; border-top-right-radius: 35px; padding: 25px; animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        
+        .ios-input {
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 40px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1e293b;
+            outline: none;
+            width: 100%;
+        }
+        .ios-input:focus {
+            border-color: #3b82f6;
+            background: rgba(255,255,255,0.8);
+        }
+
+        .pos-btn {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 16px;
+            border: 2px solid rgba(255,255,255,0.5);
+            background: white;
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: #64748b;
+            transition: all 0.15s;
+            backdrop-filter: blur(5px);
+        }
+        .pos-btn.active {
+            border-color: #3b82f6;
+            background: #3b82f6;
+            color: white;
+        }
+
+        .nav-item { transition: all 0.15s; }
+        .nav-item.active {
+            background: #242a3d;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+        }
+        .nav-item.active i { color: white; }
+
+        .modal-overlay { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            z-index: 100; 
+            background: rgba(0,0,0,0.3); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            justify-content: center; 
+            align-items: flex-end; 
+        }
+        .modal-content { 
+            width: 100%; 
+            max-height: 85vh; 
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top-left-radius: 35px; 
+            border-top-right-radius: 35px; 
+            padding: 25px; 
+            animation: slideUp 0.3s ease; 
+            border: 1px solid rgba(255,255,255,0.8);
+        }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        .pos-btn { width: 100%; aspect-ratio: 1/1; border-radius: 12px; border: 2px solid #f2f2f7; background: #f2f2f7; font-weight: 800; font-size: 10px; color: #8e8e93; transition: 0.2s; }
-        .pos-btn.active { border-color: var(--ios-blue); background: var(--ios-blue); color: white; }
-
-        #previewModal { background: rgba(0,0,0,0.92); backdrop-filter: blur(20px); align-items: center; justify-content: center; padding: 15px; flex-direction: column; }
-        #previewCanvas { max-width: 100%; max-height: 75vh; border-radius: 18px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+        #previewModal { 
+            background: rgba(0,0,0,0.95); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            align-items: center; 
+            justify-content: center; 
+            padding: 15px; 
+            flex-direction: column; 
+            gap: 20px;
+        }
         
-        .close-btn-circle { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); color: white; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); }
+        .preview-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        #previewCanvas { 
+            max-width: 100%; 
+            max-height: 70vh; 
+            border-radius: 24px; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5); 
+            transition: opacity 0.2s ease;
+        }
+        
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        
+        .nav-arrow:active {
+            background: rgba(255,255,255,0.4);
+            transform: translateY(-50%) scale(0.95);
+        }
+        
+        .nav-arrow.left {
+            left: 10px;
+        }
+        
+        .nav-arrow.right {
+            right: 10px;
+        }
+        
+        .nav-arrow.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        .preview-counter {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-top: 10px;
+        }
+        
+        .close-btn-circle { 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3); 
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .close-btn-circle:active {
+            transform: scale(0.95);
+            background: rgba(255,255,255,0.3);
+        }
 
-        .nav-dock { padding-bottom: calc(env(safe-area-inset-bottom) + 10px); }
-        input[type="range"] { -webkit-appearance: none; height: 6px; background: #f2f2f7; border-radius: 5px; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; background: white; border: 1px solid #ddd; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
+        input[type="range"] { 
+            -webkit-appearance: none; 
+            height: 6px; 
+            background: #e2e8f0; 
+            border-radius: 5px; 
+        }
+        input[type="range"]::-webkit-slider-thumb { 
+            -webkit-appearance: none; 
+            width: 26px; 
+            height: 26px; 
+            background: white; 
+            border: 2px solid #3b82f6; 
+            border-radius: 50%; 
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15); 
+            cursor: pointer;
+        }
+
+        input[type="time"] {
+            background: transparent;
+            border: none;
+            font-weight: 700;
+            color: #3b82f6;
+            font-size: 1.1rem;
+            outline: none;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .image-item {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 24px;
+            padding: 0.75rem;
+            transition: all 0.2s;
+        }
+        .image-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e2e8f0;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input:checked + .toggle-slider {
+            background-color: #3b82f6;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
     </style>
 </head>
-<body class="p-4 safe-top">
+<body class="p-5 pb-0 relative">
 
-    <header class="flex justify-between items-center mb-4 px-2">
-        <h1 class="text-2xl font-extrabold tracking-tighter italic">Pulando <span class="text-blue-500">Elite</span></h1>
-        <div class="text-[9px] font-black opacity-30 uppercase tracking-tighter">iOS Cloud Render</div>
-    </header>
-
-    <div class="flex gap-2 mb-4 flex-none">
-        <div class="relative flex-1">
-            <input type="text" id="areaInput" class="apple-glass ios-input !bg-white/60 shadow-sm" placeholder="Nama Area Laporan..." oninput="saveSettings()">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <span class="text-xs font-semibold text-indigo-400/80 tracking-widest">Shiftku.</span>
+            <h1 class="text-3xl font-bold tracking-tight">Pulando</h1>
         </div>
-        <button onclick="openSettings()" class="apple-glass w-[52px] h-[52px] rounded-[16px] flex items-center justify-center shadow-sm active:scale-90 transition-transform bg-blue-500/10">
+        <div class="text-xs font-medium text-gray-400/80 px-3 py-1.5 rounded-full bg-white/30 backdrop-blur-sm border border-white/40">
+            <i class="fa-solid fa-camera-retro mr-1"></i> Watermark
+        </div>
+    </div>
+
+    <!-- Input Area + Settings Button -->
+    <div class="flex gap-2 mb-5">
+        <div class="flex-1">
+            <input type="text" id="areaInput" class="ios-input" placeholder="Nama Area / Laporan..." oninput="saveSettings()">
+        </div>
+        <button onclick="openSettings()" class="w-[52px] h-[52px] rounded-full bg-white/50 backdrop-blur-sm border border-white/70 flex items-center justify-center active:scale-90 transition-all shadow-sm">
             <i class="fa-solid fa-sliders text-blue-500 text-xl"></i>
         </button>
     </div>
 
-    <div class="flex-none px-1">
-        <label class="relative flex flex-col items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 rounded-[22px] cursor-pointer bg-white/20 active:bg-white/40 transition-all">
+    <!-- Upload Area -->
+    <div class="mb-5">
+        <label class="relative flex flex-col items-center justify-center w-full h-24 glass-card rounded-[30px] cursor-pointer active:scale-[0.98] transition-all border border-white/60">
             <div class="flex items-center gap-3">
-                <i class="fa-solid fa-cloud-arrow-up text-blue-500"></i>
-                <span class="text-[11px] font-black text-gray-500 uppercase tracking-widest">Tambah Foto</span>
+                <i class="fa-solid fa-cloud-arrow-up text-2xl text-blue-500/70"></i>
+                <span class="text-sm font-semibold text-gray-500">Tambah Foto</span>
             </div>
             <input type="file" id="imageUpload" class="hidden" multiple accept="image/*" />
         </label>
     </div>
 
-    <main id="imageList" class="flex-grow overflow-y-auto space-y-3 py-4 pb-44 px-1"></main>
+    <!-- Image List -->
+    <main id="imageList" class="flex-grow overflow-y-auto space-y-3 pb-32 px-1"></main>
 
+    <!-- Process Button (hidden initially) -->
     <div id="actionArea" class="hidden fixed bottom-24 left-0 w-full px-6 z-40">
-        <button onclick="processAll()" class="w-full bg-blue-600 text-white font-extrabold py-4 rounded-[22px] shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3">
+        <button onclick="processAll()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-[30px] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-3 backdrop-blur-sm bg-blue-600/90 border border-blue-400">
             <i class="fa-solid fa-check-double"></i>
             PROSES & SIMPAN
         </button>
     </div>
 
-    <nav class="fixed bottom-0 left-0 w-full px-6 nav-dock z-50">
-        <div class="apple-glass h-16 rounded-[24px] max-w-sm mx-auto flex items-center justify-around shadow-lg">
-            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-400"><i class="fa-solid fa-house-chimney text-lg"></i><span class="text-[9px] font-black">JADWAL</span></a>
-            <a href="pulando.html" class="flex flex-col items-center gap-1 text-blue-600"><i class="fa-solid fa-camera-retro text-lg"></i><span class="text-[9px] font-black">PULANDO</span></a>
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-50">
+        <div class="glass-morph rounded-[50px] py-2 px-4 flex items-center justify-around border border-white/50 shadow-lg backdrop-blur-2xl">
+            <a href="index.html" class="nav-item flex items-center gap-2 text-sm font-bold text-gray-500">
+                <i class="fa-solid fa-calendar-days"></i> <span class="hidden sm:inline">Jadwal</span>
+            </a>
+            <a href="#" class="nav-item active flex items-center gap-2 text-sm font-bold">
+                <i class="fa-solid fa-camera-retro"></i> <span class="hidden sm:inline">Pulando</span>
+            </a>
         </div>
     </nav>
 
+    <!-- Settings Modal -->
     <div id="settingsModal" class="modal-overlay" onclick="closeOnOutside(event)">
-        <div class="modal-content shadow-2xl">
+        <div class="modal-content">
             <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
-            <h2 class="text-xl font-extrabold tracking-tight mb-6">Watermark Styles</h2>
-            <div class="space-y-6 pb-12">
+            <h2 class="text-xl font-bold mb-6">Watermark Settings</h2>
+            <div class="space-y-6 pb-6">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="text-[10px] font-black text-gray-400 uppercase mb-2 block">Warna & Font</label>
-                        <div class="flex gap-2">
-                            <input type="color" id="textColor" class="w-12 h-12 border-none bg-transparent" onchange="saveSettings()">
-                            <select id="fontFamily" class="ios-input py-2 bg-gray-100 text-sm" onchange="saveSettings()">
-                                <option value="Plus Jakarta Sans">Jakarta</option>
-                                <option value="Inter">Modern Inter</option>
-                                <option value="Montserrat">Montserrat</option>
-                                <option value="Roboto Mono">Code Mono</option>
-                                <option value="Oswald">Oswald Bold</option>
-                                <option value="Playfair Display">Classy Serif</option>
-                            </select>
-                        </div>
+                        <label class="text-[0.7rem] font-semibold text-gray-400 uppercase mb-2 block">Warna</label>
+                        <input type="color" id="textColor" class="w-12 h-12 border-none bg-transparent" onchange="saveSettings()">
                     </div>
                     <div>
-                        <label class="text-[10px] font-black text-gray-400 uppercase mb-2 block">Posisi</label>
-                        <div class="grid grid-cols-3 gap-1">
-                            <button onclick="setPos('tl')" id="pos-tl" class="pos-btn">TL</button>
-                            <button onclick="setPos('tc')" id="pos-tc" class="pos-btn">TC</button>
-                            <button onclick="setPos('tr')" id="pos-tr" class="pos-btn">TR</button>
-                            <button onclick="setPos('bl')" id="pos-bl" class="pos-btn">BL</button>
-                            <button onclick="setPos('bc')" id="pos-bc" class="pos-btn">BC</button>
-                            <button onclick="setPos('br')" id="pos-br" class="pos-btn">BR</button>
-                        </div>
+                        <label class="text-[0.7rem] font-semibold text-gray-400 uppercase mb-2 block">Font</label>
+                        <select id="fontFamily" class="select-soft w-full" onchange="saveSettings()">
+                            <option value="Space Grotesk">Space Grotesk</option>
+                            <option value="Inter">Inter</option>
+                            <option value="Montserrat">Montserrat</option>
+                            <option value="Roboto Mono">Roboto Mono</option>
+                            <option value="Oswald">Oswald</option>
+                            <option value="Playfair Display">Playfair Display</option>
+                            <option value="Poppins">Poppins</option>
+                            <option value="Work Sans">Work Sans</option>
+                            <option value="DM Sans">DM Sans</option>
+                            <option value="Outfit">Outfit</option>
+                            <option value="SF Pro Text">SF Pro (iOS)</option>
+                            <option value="Helvetica Neue">Helvetica</option>
+                            <option value="Arial">Arial</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Times New Roman">Times</option>
+                            <option value="Courier New">Courier</option>
+                        </select>
                     </div>
                 </div>
+                
                 <div>
-                    <label class="flex justify-between text-[10px] font-black text-gray-400 uppercase mb-2">Ukuran Teks <span id="sizeVal" class="text-blue-500">3.5%</span></label>
+                    <label class="text-[0.7rem] font-semibold text-gray-400 uppercase mb-2 block">Posisi</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setPos('tl')" id="pos-tl" class="pos-btn">TL</button>
+                        <button onclick="setPos('tc')" id="pos-tc" class="pos-btn">TC</button>
+                        <button onclick="setPos('tr')" id="pos-tr" class="pos-btn">TR</button>
+                        <button onclick="setPos('bl')" id="pos-bl" class="pos-btn">BL</button>
+                        <button onclick="setPos('bc')" id="pos-bc" class="pos-btn">BC</button>
+                        <button onclick="setPos('br')" id="pos-br" class="pos-btn">BR</button>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="flex justify-between text-[0.7rem] font-semibold text-gray-400 uppercase mb-2">
+                        Ukuran <span id="sizeVal" class="text-blue-500">3.5%</span>
+                    </label>
                     <input type="range" id="textSize" min="1" max="12" step="0.5" class="w-full" oninput="updateSizeDisplay(this.value)">
                 </div>
-                <button onclick="closeSettings()" class="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl">Terapkan</button>
+
+                <div class="flex items-center justify-between">
+                    <label class="text-[0.7rem] font-semibold text-gray-400 uppercase">Auto Contrast</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autoContrast" checked onchange="saveSettings()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <button onclick="closeSettings()" class="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl">Selesai</button>
             </div>
         </div>
     </div>
 
-    <div id="previewModal" class="modal-overlay">
-        <canvas id="previewCanvas"></canvas>
-        <button onclick="closePreview()" class="close-btn-circle mt-10 shadow-xl"><i class="fa-solid fa-xmark text-2xl"></i></button>
+    <!-- Preview Modal with Navigation -->
+    <div id="previewModal" class="modal-overlay" onclick="closeOnOutside(event)">
+        <div class="preview-container">
+            <div class="nav-arrow left" id="prevArrow" onclick="navigatePreview(-1); event.stopPropagation();">
+                <i class="fa-solid fa-chevron-left text-2xl"></i>
+            </div>
+            <canvas id="previewCanvas" onclick="event.stopPropagation()"></canvas>
+            <div class="nav-arrow right" id="nextArrow" onclick="navigatePreview(1); event.stopPropagation();">
+                <i class="fa-solid fa-chevron-right text-2xl"></i>
+            </div>
+        </div>
+        <div class="preview-counter" id="previewCounter">1/1</div>
+        <button onclick="closePreview()" class="close-btn-circle"><i class="fa-solid fa-xmark text-2xl"></i></button>
     </div>
 
+    <!-- Hidden Canvas for Processing -->
     <canvas id="mainCanvas" class="hidden"></canvas>
 
     <script>
+        // Font loading
+        const fonts = [
+            'Space Grotesk', 'Inter', 'Montserrat', 'Roboto Mono', 'Oswald',
+            'Playfair Display', 'Poppins', 'Work Sans', 'DM Sans', 'Outfit'
+        ];
+        
+        function loadFonts() {
+            fonts.map(font => {
+                document.fonts.load(`700 16px '${font}'`).catch(() => {});
+            });
+        }
+        loadFonts();
+
         let uploadedFiles = [];
         let currentPos = 'bl';
+        let modalActive = false;
+        let currentPreviewIndex = 0;
+
+        window.addEventListener('popstate', () => {
+            if (modalActive) {
+                closeAllModals();
+            }
+        });
+
+        // Keyboard navigation
+        window.addEventListener('keydown', (e) => {
+            if (!modalActive || document.getElementById('previewModal').style.display !== 'flex') return;
+            
+            if (e.key === 'ArrowLeft') {
+                navigatePreview(-1);
+            } else if (e.key === 'ArrowRight') {
+                navigatePreview(1);
+            } else if (e.key === 'Escape') {
+                closePreview();
+            }
+        });
+
+        function pushModalState() {
+            history.pushState({modal: true}, '');
+            modalActive = true;
+        }
+
+        function closeAllModals() {
+            document.getElementById('settingsModal').style.display = 'none';
+            document.getElementById('previewModal').style.display = 'none';
+            modalActive = false;
+        }
 
         window.onload = () => {
             const saved = JSON.parse(localStorage.getItem('pulandoSettings')) || {
-                area: "", color: "#ffffff", font: "Plus Jakarta Sans", pos: "bl", size: "3.5"
+                area: "", color: "#ffffff", font: "Space Grotesk", pos: "bl", size: "3.5",
+                autoContrast: true
             };
             document.getElementById('areaInput').value = saved.area;
             document.getElementById('textColor').value = saved.color;
             document.getElementById('fontFamily').value = saved.font;
             document.getElementById('textSize').value = saved.size;
+            document.getElementById('autoContrast').checked = saved.autoContrast !== false;
             updateSizeDisplay(saved.size);
             setPos(saved.pos);
         };
@@ -150,15 +529,35 @@
                 color: document.getElementById('textColor').value,
                 font: document.getElementById('fontFamily').value,
                 pos: currentPos,
-                size: document.getElementById('textSize').value
+                size: document.getElementById('textSize').value,
+                autoContrast: document.getElementById('autoContrast').checked
             };
             localStorage.setItem('pulandoSettings', JSON.stringify(settings));
         }
 
-        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
-        function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
-        function closeOnOutside(e) { if(e.target.id === 'settingsModal') closeSettings(); }
-        function updateSizeDisplay(val) { document.getElementById('sizeVal').innerText = val + '%'; saveSettings(); }
+        function openSettings() { 
+            document.getElementById('settingsModal').style.display = 'flex'; 
+            pushModalState();
+        }
+        
+        function closeSettings() { 
+            document.getElementById('settingsModal').style.display = 'none'; 
+            modalActive = false;
+            if (history.state?.modal) history.back();
+        }
+
+        function closeOnOutside(e) { 
+            if(e.target.id === 'settingsModal' || e.target.id === 'previewModal') {
+                closeAllModals();
+                if (history.state?.modal) history.back();
+            }
+        }
+
+        function updateSizeDisplay(val) { 
+            document.getElementById('sizeVal').innerText = val + '%'; 
+            saveSettings(); 
+        }
+        
         function setPos(pos) {
             currentPos = pos;
             document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
@@ -166,68 +565,167 @@
             saveSettings();
         }
 
-        imageUpload.onchange = (e) => {
+        document.getElementById('imageUpload').onchange = (e) => {
             const files = Array.from(e.target.files);
             if (files.length > 0) document.getElementById('actionArea').classList.remove('hidden');
+            
             files.forEach(file => {
                 const id = Math.random().toString(36).substr(2, 9);
                 const now = new Date();
                 const timeStr = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}).replace('.',':');
-                const fileData = { id, file, time: timeStr, originalHour: now.getHours(), reader: new FileReader() };
+                
+                const fileData = { 
+                    id, 
+                    file, 
+                    time: timeStr, 
+                    originalHour: now.getHours(), 
+                    reader: new FileReader() 
+                };
+                
                 fileData.reader.onload = (ev) => {
                     const item = document.createElement('div');
-                    item.className = "apple-glass p-3 rounded-2xl flex items-center gap-4 mx-1 animate-slideUp";
+                    item.className = "image-item flex items-center gap-4";
                     item.id = `item-${id}`;
                     item.innerHTML = `
-                        <img src="${ev.target.result}" onclick="renderCanvas('${id}', 'previewCanvas')" class="w-16 h-16 object-cover rounded-[14px] shadow-sm active:scale-95 transition-all">
+                        <img src="${ev.target.result}" onclick="openPreview('${id}')" class="w-16 h-16 object-cover rounded-[20px] shadow-sm active:scale-95 transition-all cursor-pointer">
                         <div class="flex-1 flex justify-between items-center">
-                            <div class="flex flex-col"><span class="text-[9px] font-black text-gray-400 uppercase">Set Jam</span>
-                            <input type="time" class="font-bold text-blue-600 bg-transparent text-lg" value="${timeStr}" onchange="updateTime('${id}', this.value)"></div>
-                            <button onclick="removeItem('${id}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button>
-                        </div>`;
+                            <div class="flex flex-col">
+                                <span class="text-[0.65rem] font-semibold text-gray-400 uppercase">Jam</span>
+                                <input type="time" class="font-bold text-blue-600 bg-transparent text-lg" value="${timeStr}" onchange="updateTime('${id}', this.value)">
+                            </div>
+                            <button onclick="removeItem('${id}')" class="text-red-400 p-2 hover:bg-red-50 rounded-full transition-all">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
                     document.getElementById('imageList').prepend(item);
                 };
+                
                 fileData.reader.readAsDataURL(file);
                 uploadedFiles.push(fileData);
             });
         };
 
-        function updateTime(id, val) { uploadedFiles.find(f => f.id === id).time = val; }
+        function updateTime(id, val) { 
+            const file = uploadedFiles.find(f => f.id === id);
+            if (file) file.time = val; 
+        }
+        
         function removeItem(id) { 
+            const index = uploadedFiles.findIndex(f => f.id === id);
             uploadedFiles = uploadedFiles.filter(f => f.id !== id); 
             document.getElementById(`item-${id}`).remove();
-            if(uploadedFiles.length === 0) document.getElementById('actionArea').classList.add('hidden');
+            if(uploadedFiles.length === 0) {
+                document.getElementById('actionArea').classList.add('hidden');
+                closePreview();
+            }
         }
 
         function getDynamicDate(originalHour, inputTime) {
             let d = new Date();
-            const [newHour, newMin] = inputTime.split(':').map(Number);
+            const [newHour] = inputTime.split(':').map(Number);
             if (newHour < originalHour && (originalHour - newHour) > 12) d.setDate(d.getDate() + 1);
             else if (newHour > originalHour && (newHour - originalHour) > 12) d.setDate(d.getDate() - 1);
             return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         }
 
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : {r:255,g:255,b:255};
+        }
+
+        function getContrastColor(hex) {
+            const rgb = hexToRgb(hex);
+            const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
+            return luminance > 0.5 ? '#000000' : '#ffffff';
+        }
+
+        function openPreview(id) {
+            const index = uploadedFiles.findIndex(f => f.id === id);
+            if (index === -1) return;
+            
+            currentPreviewIndex = index;
+            renderCanvas(uploadedFiles[currentPreviewIndex].id, 'previewCanvas');
+            document.getElementById('previewModal').style.display = 'flex';
+            updatePreviewCounter();
+            pushModalState();
+        }
+
+        function navigatePreview(direction) {
+            const newIndex = currentPreviewIndex + direction;
+            if (newIndex < 0 || newIndex >= uploadedFiles.length) return;
+            
+            currentPreviewIndex = newIndex;
+            renderCanvas(uploadedFiles[currentPreviewIndex].id, 'previewCanvas');
+            updatePreviewCounter();
+        }
+
+        function updatePreviewCounter() {
+            const counter = document.getElementById('previewCounter');
+            counter.innerText = `${currentPreviewIndex + 1}/${uploadedFiles.length}`;
+            
+            const prevArrow = document.getElementById('prevArrow');
+            const nextArrow = document.getElementById('nextArrow');
+            
+            prevArrow.classList.toggle('disabled', currentPreviewIndex === 0);
+            nextArrow.classList.toggle('disabled', currentPreviewIndex === uploadedFiles.length - 1);
+        }
+
         function renderCanvas(id, targetId) {
             const item = uploadedFiles.find(f => f.id === id);
+            if (!item) return;
+            
             const targetCanvas = document.getElementById(targetId);
             const ctx = targetCanvas.getContext('2d');
             const img = new Image();
+            
             img.onload = () => {
-                targetCanvas.width = img.width; targetCanvas.height = img.height;
+                targetCanvas.width = img.width; 
+                targetCanvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
+                
                 const sets = JSON.parse(localStorage.getItem('pulandoSettings'));
-                const fontSize = img.width * (sets.size / 100);
-                ctx.font = `700 ${fontSize}px '${sets.font}'`;
-                ctx.fillStyle = sets.color;
-                ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = fontSize/1.8;
+                const fontSize = img.width * (parseFloat(sets.size) / 100);
+                const padding = fontSize * 1.5;
+                
+                let textColor = sets.color;
+                if (sets.autoContrast) {
+                    textColor = getContrastColor(sets.color);
+                }
+                
+                ctx.font = `700 ${fontSize}px '${sets.font}', 'Space Grotesk', sans-serif`;
+                ctx.fillStyle = textColor;
+                ctx.shadowColor = "rgba(0,0,0,0.2)"; 
+                ctx.shadowBlur = fontSize / 1.5;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
                 
                 const dateText = getDynamicDate(item.originalHour, item.time);
                 const fullText = `${dateText} pukul ${item.time.replace(':', '.')}`;
-                let x = fontSize, y = fontSize * 2; ctx.textAlign = "left";
                 
-                if (sets.pos.includes('c')) { ctx.textAlign = "center"; x = img.width/2; }
-                if (sets.pos.includes('r')) { ctx.textAlign = "right"; x = img.width - fontSize; }
-                if (sets.pos.startsWith('b')) { y = img.height - fontSize; }
+                let x = padding;
+                let y = padding + fontSize;
+                ctx.textAlign = "left";
+                
+                if (sets.pos.includes('c')) { 
+                    ctx.textAlign = "center"; 
+                    x = img.width/2; 
+                } else if (sets.pos.includes('r')) { 
+                    ctx.textAlign = "right"; 
+                    x = img.width - padding; 
+                } else if (sets.pos.includes('l')) { 
+                    x = padding; 
+                }
+                
+                if (sets.pos.startsWith('b')) { 
+                    y = img.height - padding; 
+                } else if (sets.pos.startsWith('t')) { 
+                    y = padding + fontSize; 
+                }
 
                 if (sets.pos.startsWith('b')) {
                     ctx.fillText(fullText, x, y);
@@ -236,19 +734,22 @@
                     ctx.fillText(sets.area, x, y);
                     ctx.fillText(fullText, x, y + (fontSize * 1.3));
                 }
-                if(targetId === 'previewCanvas') document.getElementById('previewModal').style.display = 'flex';
             };
             img.src = item.reader.result;
         }
 
-        function closePreview() { document.getElementById('previewModal').style.display = 'none'; }
+        function closePreview() { 
+            document.getElementById('previewModal').style.display = 'none'; 
+            modalActive = false;
+            if (history.state?.modal) history.back();
+        }
 
         async function processAll() {
             for (const item of uploadedFiles) {
                 renderCanvas(item.id, 'mainCanvas');
-                await new Promise(r => setTimeout(r, 400));
+                await new Promise(r => setTimeout(r, 500));
                 const link = document.createElement('a');
-                link.download = `PULANDO_${item.time.replace(':','')}.jpg`;
+                link.download = `PULANDO_${item.time.replace(':', '')}.jpg`;
                 link.href = document.getElementById('mainCanvas').toDataURL('image/jpeg', 0.9);
                 link.click();
             }
