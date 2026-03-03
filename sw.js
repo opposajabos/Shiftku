@@ -1,16 +1,48 @@
 const CACHE_NAME = 'shiftku-v1';
-const ASSETS = [
+const urlsToCache = [
   './',
   './index.html',
-  './pulando.html',
   './manifest.json',
   './img/icon.png'
 ];
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', { scope: './' }) // Paksa scope ke seluruh folder root
-      .then(reg => console.log('SW terdaftar di scope:', reg.scope))
-      .catch(err => console.error('SW gagal daftar:', err));
-  });
-}
+// Install service worker
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+    .then(cache => {
+      console.log('Cache opened');
+      return cache.addAll(urlsToCache);
+    })
+  );
+});
+
+// Fetch resources
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+    .then(response => {
+      // Cache hit - return response
+      if (response) {
+        return response;
+      }
+      return fetch(event.request);
+    })
+  );
+});
+
+// Activate and clean up old caches
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
