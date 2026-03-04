@@ -276,6 +276,48 @@
             transform: translateY(-2px);
             box-shadow: 0 12px 30px rgba(0,0,0,0.05);
         }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e2e8f0;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input:checked + .toggle-slider {
+            background-color: #3b82f6;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
     </style>
 </head>
 <body class="p-5 pb-0 relative">
@@ -388,6 +430,15 @@
                     <input type="range" id="textSize" min="1" max="12" step="0.5" class="w-full" oninput="updateSizeDisplay(this.value)">
                 </div>
 
+                <!-- Toggle Tampilkan Hari -->
+                <div class="flex items-center justify-between">
+                    <label class="text-[0.7rem] font-semibold text-gray-400 uppercase">Tampilkan Hari</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="showDay" checked onchange="saveSettings()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
                 <button onclick="closeSettings()" class="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl">Selesai</button>
             </div>
         </div>
@@ -462,12 +513,18 @@
 
         window.onload = () => {
             const saved = JSON.parse(localStorage.getItem('pulandoSettings')) || {
-                area: "", color: "#ffffff", font: "SF Pro Text", pos: "bl", size: "3.5"
+                area: "", 
+                color: "#ffffff", 
+                font: "SF Pro Text", 
+                pos: "bl", 
+                size: "3.5",
+                showDay: true
             };
             document.getElementById('areaInput').value = saved.area;
             document.getElementById('textColor').value = saved.color;
             document.getElementById('fontFamily').value = saved.font;
             document.getElementById('textSize').value = saved.size;
+            document.getElementById('showDay').checked = saved.showDay !== false;
             updateSizeDisplay(saved.size);
             setPos(saved.pos);
         };
@@ -478,7 +535,8 @@
                 color: document.getElementById('textColor').value,
                 font: document.getElementById('fontFamily').value,
                 pos: currentPos,
-                size: document.getElementById('textSize').value
+                size: document.getElementById('textSize').value,
+                showDay: document.getElementById('showDay').checked
             };
             localStorage.setItem('pulandoSettings', JSON.stringify(settings));
         }
@@ -700,7 +758,8 @@
                     color: "#ffffff",
                     font: "SF Pro Text",
                     pos: "bl",
-                    size: "3.5"
+                    size: "3.5",
+                    showDay: true
                 };
                 
                 const fontSize = img.width * (parseFloat(sets.size) / 100);
@@ -719,13 +778,34 @@
                 // Dapatkan tanggal yang tepat
                 const dateText = getDynamicDate(item.originalHour, item.time);
                 
-                // Untuk preview, tampilkan dengan hari
+                // Tentukan format teks berdasarkan setting showDay
                 let displayText;
                 if (targetId === 'previewCanvas') {
                     const previewDate = getPreviewDate(item.time, item.originalHour, item.originalMinute);
-                    displayText = `${previewDate} pukul ${item.time.replace(':', '.')}`;
+                    if (sets.showDay) {
+                        // Tampilkan dengan hari
+                        displayText = `${previewDate} pukul ${item.time.replace(':', '.')}`;
+                    } else {
+                        // Tampilkan tanpa hari (parse tanggal dari previewDate lalu format tanpa weekday)
+                        const dateParts = previewDate.split(' ');
+                        // previewDate format: "Senin, 4 Maret 2026"
+                        // Ambil bagian setelah koma: "4 Maret 2026"
+                        const dateWithoutDay = previewDate.split(', ')[1] || previewDate;
+                        displayText = `${dateWithoutDay} pukul ${item.time.replace(':', '.')}`;
+                    }
                 } else {
-                    displayText = `${dateText} pukul ${item.time.replace(':', '.')}`;
+                    if (sets.showDay) {
+                        // Untuk export, tambah hari
+                        const fullDate = new Date(dateText).toLocaleDateString('id-ID', {
+                            weekday: 'long',
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        });
+                        displayText = `${fullDate} pukul ${item.time.replace(':', '.')}`;
+                    } else {
+                        displayText = `${dateText} pukul ${item.time.replace(':', '.')}`;
+                    }
                 }
                 
                 // Hitung posisi X
