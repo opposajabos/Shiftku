@@ -739,114 +739,163 @@
             prevArrow.classList.toggle('disabled', currentPreviewIndex === 0);
             nextArrow.classList.toggle('disabled', currentPreviewIndex === uploadedFiles.length - 1);
         }
-
-        function renderCanvas(id, targetId) {
-            const item = uploadedFiles.find(f => f.id === id);
-            if (!item) return;
+function renderCanvas(id, targetId) {
+    const item = uploadedFiles.find(f => f.id === id);
+    if (!item) return;
+    
+    const targetCanvas = document.getElementById(targetId);
+    const ctx = targetCanvas.getContext('2d');
+    const img = new Image();
+    
+    img.onload = () => {
+        
+        // ===== SET SIZE NORMAL (tanpa retina scaling) =====
+        targetCanvas.width = img.width;
+        targetCanvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        
+        const sets = JSON.parse(localStorage.getItem('pulandoSettings')) || {
+            area: "",
+            color: "#ffffff",
+            font: "SF Pro Text",
+            pos: "bl",
+            size: "3.5",
+            showDay: true
+        };
+        
+        const fontSize = img.width * (parseFloat(sets.size) / 100);
+        
+        const EDGE_PADDING = 144; // 🔥 solid 14px
+        const LINE_GAP = 1;
+        
+        // ===== SET FONT =====
+        ctx.font = `700 ${fontSize}px '${sets.font}', 'Space Grotesk', sans-serif`;
+        ctx.fillStyle = sets.color;
+        
+        // ===== SHADOW (hanya untuk area, nanti reset) =====
+        ctx.shadowColor = "rgba(0,0,0,0.7)";
+        ctx.shadowBlur = fontSize / 1.2;
+        ctx.shadowOffsetX = 3;
+        ctx.shadowOffsetY = 3;
+        
+        // ===== FORMAT TEXT =====
+        const dateText = getDynamicDate(item.originalHour, item.time);
+        
+        let displayText;
+        
+        if (targetId === 'previewCanvas') {
+            const previewDate = getPreviewDate(
+                item.time,
+                item.originalHour,
+                item.originalMinute
+            );
             
-            const targetCanvas = document.getElementById(targetId);
-            const ctx = targetCanvas.getContext('2d');
-            const img = new Image();
+            displayText = sets.showDay ?
+                `${previewDate} pukul ${item.time.replace(':', '.')}` :
+                `${(previewDate.split(', ')[1] || previewDate)} pukul ${item.time.replace(':', '.')}`;
+        } else {
+            displayText = sets.showDay ?
+                `${new Date(dateText).toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                })} pukul ${item.time.replace(':', '.')}` :
+                `${dateText} pukul ${item.time.replace(':', '.')}`;
+        }
+        
+        // ===== UKUR TINGGI TEKS ASLI (SUPER PRESISI) =====
+        const areaMetrics = ctx.measureText(sets.area || "");
+        const areaHeight =
+            areaMetrics.actualBoundingBoxAscent +
+            areaMetrics.actualBoundingBoxDescent;
+        
+        const dateMetrics = ctx.measureText(displayText);
+        const dateHeight =
+            dateMetrics.actualBoundingBoxAscent +
+            dateMetrics.actualBoundingBoxDescent;
+        
+        // ===== POSISI X =====
+        let x;
+        if (sets.pos.includes('l')) {
+            ctx.textAlign = "left";
+            x = EDGE_PADDING;
+        } else if (sets.pos.includes('c')) {
+            ctx.textAlign = "center";
+            x = img.width / 2;
+        } else {
+            ctx.textAlign = "right";
+            x = img.width - EDGE_PADDING;
+        }
+        
+        // ===== POSISI Y =====
+        if (sets.pos.startsWith('b')) {
+            // ===== BOTTOM =====
+            ctx.textBaseline = "bottom";
             
-            img.onload = () => {
-                targetCanvas.width = img.width; 
-                targetCanvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
+            const bottomEdge = img.height - EDGE_PADDING;
+            
+            if (sets.area) {
+                // Area tepat 14px dari bawah
+                ctx.fillText(sets.area, x, bottomEdge);
                 
-                const sets = JSON.parse(localStorage.getItem('pulandoSettings')) || {
-                    area: "",
-                    color: "#ffffff",
-                    font: "SF Pro Text",
-                    pos: "bl",
-                    size: "3.5",
-                    showDay: true
-                };
-                
-                const fontSize = img.width * (parseFloat(sets.size) / 100);
-                const padding = fontSize * 1.5;
-                
-                // SETUP SHADOW - Lebih tebal untuk visibilitas
-                ctx.shadowColor = "rgba(0,0,0,0.7)";
-                ctx.shadowBlur = fontSize / 1.2;
-                ctx.shadowOffsetX = 3;
-                ctx.shadowOffsetY = 3;
-                
-                ctx.font = `700 ${fontSize}px '${sets.font}', 'Space Grotesk', sans-serif`;
-                ctx.fillStyle = sets.color;
-                ctx.textAlign = "left";
-                
-                // Dapatkan tanggal yang tepat
-                const dateText = getDynamicDate(item.originalHour, item.time);
-                
-                // Tentukan format teks berdasarkan setting showDay
-                let displayText;
-                if (targetId === 'previewCanvas') {
-                    const previewDate = getPreviewDate(item.time, item.originalHour, item.originalMinute);
-                    if (sets.showDay) {
-                        // Tampilkan dengan hari
-                        displayText = `${previewDate} pukul ${item.time.replace(':', '.')}`;
-                    } else {
-                        // Tampilkan tanpa hari (parse tanggal dari previewDate lalu format tanpa weekday)
-                        const dateParts = previewDate.split(' ');
-                        // previewDate format: "Senin, 4 Maret 2026"
-                        // Ambil bagian setelah koma: "4 Maret 2026"
-                        const dateWithoutDay = previewDate.split(', ')[1] || previewDate;
-                        displayText = `${dateWithoutDay} pukul ${item.time.replace(':', '.')}`;
-                    }
-                } else {
-                    if (sets.showDay) {
-                        // Untuk export, tambah hari
-                        const fullDate = new Date(dateText).toLocaleDateString('id-ID', {
-                            weekday: 'long',
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric'
-                        });
-                        displayText = `${fullDate} pukul ${item.time.replace(':', '.')}`;
-                    } else {
-                        displayText = `${dateText} pukul ${item.time.replace(':', '.')}`;
-                    }
-                }
-                
-                // Hitung posisi X
-                let x = padding;
-                if (sets.pos.includes('c')) { 
-                    ctx.textAlign = "center"; 
-                    x = img.width/2; 
-                } else if (sets.pos.includes('r')) { 
-                    ctx.textAlign = "right"; 
-                    x = img.width - padding; 
-                } else if (sets.pos.includes('l')) { 
-                    x = padding; 
-                }
-                
-                // Hitung posisi Y
-                let y;
-                if (sets.pos.startsWith('b')) { 
-                    y = img.height - padding; 
-                } else { 
-                    y = padding + fontSize; 
-                }
-
-                // Gambar teks
-                if (sets.pos.startsWith('b')) {
-                    // Untuk posisi bawah: teks tanggal di atas, area di bawah
-                    ctx.fillText(displayText, x, y - (fontSize * 1.3));
-                    ctx.fillText(sets.area, x, y);
-                } else {
-                    // Untuk posisi atas: area di atas, teks tanggal di bawah
-                    ctx.fillText(sets.area, x, y);
-                    ctx.fillText(displayText, x, y + (fontSize * 1.3));
-                }
-                
-                // Reset shadow agar tidak mempengaruhi gambar lain
+                // Reset shadow sebelum tanggal
                 ctx.shadowColor = "transparent";
                 ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-            };
-            img.src = item.reader.result;
+                
+                // Tanggal tepat di atas area
+                ctx.fillText(
+                    displayText,
+                    x,
+                    bottomEdge - areaHeight - LINE_GAP
+                );
+            } else {
+                ctx.shadowColor = "transparent";
+                ctx.shadowBlur = 0;
+                
+                // Kalau tanpa area, tanggal langsung 14px dari bawah
+                ctx.fillText(displayText, x, bottomEdge);
+            }
+            
+        } else {
+            // ===== TOP =====
+            ctx.textBaseline = "top";
+            
+            const topEdge = EDGE_PADDING;
+            
+            if (sets.area) {
+                // Area tepat 14px dari atas
+                ctx.fillText(sets.area, x, topEdge);
+                
+                // Reset shadow sebelum tanggal
+                ctx.shadowColor = "transparent";
+                ctx.shadowBlur = 0;
+                
+                // Tanggal tepat di bawah area
+                ctx.fillText(
+                    displayText,
+                    x,
+                    topEdge + areaHeight + LINE_GAP
+                );
+            } else {
+                ctx.shadowColor = "transparent";
+                ctx.shadowBlur = 0;
+                
+                // Kalau tanpa area, tanggal langsung 14px dari atas
+                ctx.fillText(displayText, x, topEdge);
+            }
         }
+        
+        // Cleanup shadow
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+    };
+    
+    img.src = item.reader.result;
+}
+
 
         function closePreview() { 
             document.getElementById('previewModal').style.display = 'none'; 
