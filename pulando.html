@@ -276,47 +276,6 @@
             transform: translateY(-2px);
             box-shadow: 0 12px 30px rgba(0,0,0,0.05);
         }
-
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 52px;
-            height: 28px;
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #e2e8f0;
-            transition: .3s;
-            border-radius: 34px;
-        }
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 24px;
-            width: 24px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        input:checked + .toggle-slider {
-            background-color: #3b82f6;
-        }
-        input:checked + .toggle-slider:before {
-            transform: translateX(24px);
-        }
     </style>
 </head>
 <body class="p-5 pb-0 relative">
@@ -390,6 +349,7 @@
                     <div>
                         <label class="text-[0.7rem] font-semibold text-gray-400 uppercase mb-2 block">Font</label>
                         <select id="fontFamily" class="select-soft w-full" onchange="saveSettings()">
+                            <option value="SF Pro Text" selected>SF Pro (iOS)</option>
                             <option value="Space Grotesk">Space Grotesk</option>
                             <option value="Inter">Inter</option>
                             <option value="Montserrat">Montserrat</option>
@@ -400,7 +360,6 @@
                             <option value="Work Sans">Work Sans</option>
                             <option value="DM Sans">DM Sans</option>
                             <option value="Outfit">Outfit</option>
-                            <option value="SF Pro Text">SF Pro (iOS)</option>
                             <option value="Helvetica Neue">Helvetica</option>
                             <option value="Arial">Arial</option>
                             <option value="Georgia">Georgia</option>
@@ -429,14 +388,6 @@
                     <input type="range" id="textSize" min="1" max="12" step="0.5" class="w-full" oninput="updateSizeDisplay(this.value)">
                 </div>
 
-                <div class="flex items-center justify-between">
-                    <label class="text-[0.7rem] font-semibold text-gray-400 uppercase">Auto Contrast</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="autoContrast" checked onchange="saveSettings()">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-
                 <button onclick="closeSettings()" class="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl">Selesai</button>
             </div>
         </div>
@@ -463,7 +414,7 @@
     <script>
         // Font loading
         const fonts = [
-            'Space Grotesk', 'Inter', 'Montserrat', 'Roboto Mono', 'Oswald',
+            'SF Pro Text', 'Space Grotesk', 'Inter', 'Montserrat', 'Roboto Mono', 'Oswald',
             'Playfair Display', 'Poppins', 'Work Sans', 'DM Sans', 'Outfit'
         ];
         
@@ -511,14 +462,12 @@
 
         window.onload = () => {
             const saved = JSON.parse(localStorage.getItem('pulandoSettings')) || {
-                area: "", color: "#ffffff", font: "Space Grotesk", pos: "bl", size: "3.5",
-                autoContrast: true
+                area: "", color: "#ffffff", font: "SF Pro Text", pos: "bl", size: "3.5"
             };
             document.getElementById('areaInput').value = saved.area;
             document.getElementById('textColor').value = saved.color;
             document.getElementById('fontFamily').value = saved.font;
             document.getElementById('textSize').value = saved.size;
-            document.getElementById('autoContrast').checked = saved.autoContrast !== false;
             updateSizeDisplay(saved.size);
             setPos(saved.pos);
         };
@@ -529,8 +478,7 @@
                 color: document.getElementById('textColor').value,
                 font: document.getElementById('fontFamily').value,
                 pos: currentPos,
-                size: document.getElementById('textSize').value,
-                autoContrast: document.getElementById('autoContrast').checked
+                size: document.getElementById('textSize').value
             };
             localStorage.setItem('pulandoSettings', JSON.stringify(settings));
         }
@@ -579,6 +527,7 @@
                     file, 
                     time: timeStr, 
                     originalHour: now.getHours(), 
+                    originalMinute: now.getMinutes(),
                     reader: new FileReader() 
                 };
                 
@@ -621,27 +570,85 @@
             }
         }
 
+        // ===== FUNGSI TANGGAL DINAMIS YANG DIPERBAIKI UNTUK JAM 12 MALAM =====
         function getDynamicDate(originalHour, inputTime) {
-            let d = new Date();
-            const [newHour] = inputTime.split(':').map(Number);
-            if (newHour < originalHour && (originalHour - newHour) > 12) d.setDate(d.getDate() + 1);
-            else if (newHour > originalHour && (newHour - originalHour) > 12) d.setDate(d.getDate() - 1);
-            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const now = new Date();
+            const [inputHour, inputMinute] = inputTime.split(':').map(Number);
+            
+            // Buat tanggal target dengan jam dari input
+            let targetDate = new Date(now);
+            targetDate.setHours(inputHour, inputMinute, 0, 0);
+            
+            // Konversi ke menit untuk perbandingan
+            const nowTotal = now.getHours() * 60 + now.getMinutes();
+            const inputTotal = inputHour * 60 + inputMinute;
+            
+            // LOGIKA PERGANTIAN TANGGAL YANG TEPAT:
+            
+            // Kasus 1: Sekarang jam 23:00, input jam 01:00 (besok)
+            if (inputTotal < nowTotal && (nowTotal - inputTotal) > (12 * 60)) {
+                // Input lebih kecil dan selisih > 12 jam -> BESOK
+                targetDate.setDate(targetDate.getDate() + 1);
+            }
+            // Kasus 2: Sekarang jam 01:00, input jam 23:00 (kemarin)
+            else if (inputTotal > nowTotal && (inputTotal - nowTotal) > (12 * 60)) {
+                // Input lebih besar dan selisih > 12 jam -> KEMARIN
+                targetDate.setDate(targetDate.getDate() - 1);
+            }
+            // Kasus 3: Sekarang jam 23:30, input jam 00:30 (besok - khusus jam 00)
+            else if (inputHour === 0 && now.getHours() >= 22) {
+                // Jam 12 malam (00:00) setelah jam 22:00 -> BESOK
+                targetDate.setDate(targetDate.getDate() + 1);
+            }
+            // Kasus 4: Sekarang jam 00:30, input jam 23:30 (kemarin)
+            else if (inputHour >= 22 && now.getHours() === 0) {
+                // Input jam 22-23, sekarang jam 00 -> KEMARIN
+                targetDate.setDate(targetDate.getDate() - 1);
+            }
+            
+            return targetDate.toLocaleDateString('id-ID', { 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric' 
+            });
         }
 
-        function hexToRgb(hex) {
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16)
-            } : {r:255,g:255,b:255};
-        }
-
-        function getContrastColor(hex) {
-            const rgb = hexToRgb(hex);
-            const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
-            return luminance > 0.5 ? '#000000' : '#ffffff';
+        // Fungsi untuk mendapatkan tanggal dengan hari (untuk preview)
+        function getPreviewDate(inputTime, originalHour, originalMinute) {
+            const [inputHour, inputMinute] = inputTime.split(':').map(Number);
+            const now = new Date();
+            
+            // Buat tanggal berdasarkan original upload
+            let date = new Date();
+            date.setHours(originalHour, originalMinute, 0, 0);
+            
+            // Set jam sesuai input
+            date.setHours(inputHour, inputMinute, 0, 0);
+            
+            // Konversi ke menit
+            const originalTotal = originalHour * 60 + originalMinute;
+            const inputTotal = inputHour * 60 + inputMinute;
+            
+            // Logika pergantian tanggal
+            if (inputTotal < originalTotal && (originalTotal - inputTotal) > (12 * 60)) {
+                date.setDate(date.getDate() + 1);
+            }
+            else if (inputTotal > originalTotal && (inputTotal - originalTotal) > (12 * 60)) {
+                date.setDate(date.getDate() - 1);
+            }
+            else if (inputHour === 0 && originalHour >= 22) {
+                date.setDate(date.getDate() + 1);
+            }
+            else if (inputHour >= 22 && originalHour === 0) {
+                date.setDate(date.getDate() - 1);
+            }
+            
+            return date.toLocaleDateString('id-ID', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
         }
 
         function openPreview(id) {
@@ -688,29 +695,41 @@
                 targetCanvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
                 
-                const sets = JSON.parse(localStorage.getItem('pulandoSettings'));
+                const sets = JSON.parse(localStorage.getItem('pulandoSettings')) || {
+                    area: "",
+                    color: "#ffffff",
+                    font: "SF Pro Text",
+                    pos: "bl",
+                    size: "3.5"
+                };
+                
                 const fontSize = img.width * (parseFloat(sets.size) / 100);
                 const padding = fontSize * 1.5;
                 
-                let textColor = sets.color;
-                if (sets.autoContrast) {
-                    textColor = getContrastColor(sets.color);
-                }
+                // SETUP SHADOW - Lebih tebal untuk visibilitas
+                ctx.shadowColor = "rgba(0,0,0,0.7)";
+                ctx.shadowBlur = fontSize / 1.2;
+                ctx.shadowOffsetX = 3;
+                ctx.shadowOffsetY = 3;
                 
                 ctx.font = `700 ${fontSize}px '${sets.font}', 'Space Grotesk', sans-serif`;
-                ctx.fillStyle = textColor;
-                ctx.shadowColor = "rgba(0,0,0,0.2)"; 
-                ctx.shadowBlur = fontSize / 1.5;
-                ctx.shadowOffsetX = 2;
-                ctx.shadowOffsetY = 2;
-                
-                const dateText = getDynamicDate(item.originalHour, item.time);
-                const fullText = `${dateText} pukul ${item.time.replace(':', '.')}`;
-                
-                let x = padding;
-                let y = padding + fontSize;
+                ctx.fillStyle = sets.color;
                 ctx.textAlign = "left";
                 
+                // Dapatkan tanggal yang tepat
+                const dateText = getDynamicDate(item.originalHour, item.time);
+                
+                // Untuk preview, tampilkan dengan hari
+                let displayText;
+                if (targetId === 'previewCanvas') {
+                    const previewDate = getPreviewDate(item.time, item.originalHour, item.originalMinute);
+                    displayText = `${previewDate} pukul ${item.time.replace(':', '.')}`;
+                } else {
+                    displayText = `${dateText} pukul ${item.time.replace(':', '.')}`;
+                }
+                
+                // Hitung posisi X
+                let x = padding;
                 if (sets.pos.includes('c')) { 
                     ctx.textAlign = "center"; 
                     x = img.width/2; 
@@ -721,19 +740,30 @@
                     x = padding; 
                 }
                 
+                // Hitung posisi Y
+                let y;
                 if (sets.pos.startsWith('b')) { 
                     y = img.height - padding; 
-                } else if (sets.pos.startsWith('t')) { 
+                } else { 
                     y = padding + fontSize; 
                 }
 
+                // Gambar teks
                 if (sets.pos.startsWith('b')) {
-                    ctx.fillText(fullText, x, y);
-                    ctx.fillText(sets.area, x, y - (fontSize * 1.3));
-                } else {
+                    // Untuk posisi bawah: teks tanggal di atas, area di bawah
+                    ctx.fillText(displayText, x, y - (fontSize * 1.3));
                     ctx.fillText(sets.area, x, y);
-                    ctx.fillText(fullText, x, y + (fontSize * 1.3));
+                } else {
+                    // Untuk posisi atas: area di atas, teks tanggal di bawah
+                    ctx.fillText(sets.area, x, y);
+                    ctx.fillText(displayText, x, y + (fontSize * 1.3));
                 }
+                
+                // Reset shadow agar tidak mempengaruhi gambar lain
+                ctx.shadowColor = "transparent";
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
             };
             img.src = item.reader.result;
         }
