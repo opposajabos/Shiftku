@@ -471,7 +471,7 @@
                     <label class="flex justify-between text-[0.7rem] font-semibold text-gray-400 uppercase mb-2">
                         Jarak Padding <span id="paddingVal" class="text-blue-500">170px</span>
                     </label>
-                    <input type="range" id="textPadding" min="10" max="100" step="10" class="w-full" value="170" oninput="updatePaddingDisplay(this.value)">
+                    <input type="range" id="textPadding" min="10" max="500" step="10" class="w-full" value="170" oninput="updatePaddingDisplay(this.value)">
                 </div>
 
                 <!-- Toggle Tampilkan Hari -->
@@ -816,8 +816,8 @@
 
             // ===== TEXT SHADOW UTILITIES =====
             function setupTextShadow(ctx, fontSize, intensity = 1) {
-                const blur = 1;
-                const offset = .4;
+                const blur = 2;
+                const offset = 1;
                 ctx.shadowColor = `rgba(0, 0, 0, 0.5`;
                 ctx.shadowBlur = blur;
                 ctx.shadowOffsetX = offset;
