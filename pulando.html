@@ -47,7 +47,7 @@
             background: rgba(255,255,255,0.5);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.7);
+            border: 1px solid rgba(255,255,255,0.7);            
             border-radius: 40px;
             padding: 0.6rem 2.5rem 0.6rem 1.5rem;
             font-weight: 600;
@@ -94,12 +94,14 @@
             color: #64748b;
             transition: all 0.15s;
             backdrop-filter: blur(5px);
+            cursor: pointer;
         }
         .pos-btn.active {
             border-color: #3b82f6;
-            background: #3b82f6;
+            background: #3b82f6;            
             color: white;
         }
+        .pos-btn.active i { color: white; }
 
         .nav-item { transition: all 0.15s; }
         .nav-item.active {
@@ -147,7 +149,7 @@
         }
         
         .preview-container {
-            position: relative;
+            position: relative;            
             display: flex;
             align-items: center;
             justify-content: center;
@@ -197,7 +199,7 @@
         }
         
         .nav-arrow.disabled {
-            opacity: 0.3;
+            opacity: 0.3;            
             pointer-events: none;
         }
         
@@ -247,7 +249,7 @@
             width: 26px; 
             height: 26px; 
             background: white; 
-            border: 2px solid #3b82f6; 
+            border: 2px solid #3b82f6;             
             border-radius: 50%; 
             box-shadow: 0 3px 8px rgba(0,0,0,0.15); 
             cursor: pointer;
@@ -297,7 +299,7 @@
             right: 0;
             bottom: 0;
             background-color: #e2e8f0;
-            transition: .3s;
+            transition: .3s;            
             border-radius: 34px;
         }
         .toggle-slider:before {
@@ -318,9 +320,44 @@
         input:checked + .toggle-slider:before {
             transform: translateX(24px);
         }
+
+        /* Toast Notification */
+        #toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(30, 41, 59, 0.95);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 200;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        #toast.success { border-left: 4px solid #22c55e; }        
+        #toast.error { border-left: 4px solid #ef4444; }
+        #toast.info { border-left: 4px solid #3b82f6; }
     </style>
 </head>
 <body class="p-5 pb-0 relative">
+
+    <!-- Toast Notification -->
+    <div id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastMsg"></span></div>
 
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
@@ -362,13 +399,12 @@
         <button onclick="processAll()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-[30px] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-3 backdrop-blur-sm bg-blue-600/90 border border-blue-400">
             <i class="fa-solid fa-check-double"></i>
             PROSES & SIMPAN
-        </button>
-    </div>
+        </button>    </div>
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-50">
         <div class="glass-morph rounded-[50px] py-2 px-4 flex items-center justify-around border border-white/50 shadow-lg backdrop-blur-2xl">
-            <a href="index.html" class="nav-item flex items-center gap-2 text-sm font-bold text-gray-500">
+            <a href="#" class="nav-item flex items-center gap-2 text-sm font-bold text-gray-500">
                 <i class="fa-solid fa-calendar-days"></i> <span class="hidden sm:inline">Jadwal</span>
             </a>
             <a href="#" class="nav-item active flex items-center gap-2 text-sm font-bold">
@@ -412,7 +448,7 @@
                 </div>
                 
                 <div>
-                    <label class="text-[0.7rem] font-semibold text-gray-400 uppercase mb-2 block">Posisi</label>
+                    <label class="text-[0.7rem] font-semibold text-gray-400 uppercase mb-2 block">Posisi</label>                    
                     <div class="grid grid-cols-3 gap-2">
                         <button onclick="setPos('tl')" id="pos-tl" class="pos-btn">TL</button>
                         <button onclick="setPos('tc')" id="pos-tc" class="pos-btn">TC</button>
@@ -428,6 +464,14 @@
                         Ukuran <span id="sizeVal" class="text-blue-500">3.5%</span>
                     </label>
                     <input type="range" id="textSize" min="1" max="12" step="0.5" class="w-full" oninput="updateSizeDisplay(this.value)">
+                </div>
+
+                <!-- NEW: Padding Control -->
+                <div>
+                    <label class="flex justify-between text-[0.7rem] font-semibold text-gray-400 uppercase mb-2">
+                        Jarak Padding <span id="paddingVal" class="text-blue-500">170px</span>
+                    </label>
+                    <input type="range" id="textPadding" min="10" max="100" step="10" class="w-full" value="170" oninput="updatePaddingDisplay(this.value)">
                 </div>
 
                 <!-- Toggle Tampilkan Hari -->
@@ -454,465 +498,644 @@
             <div class="nav-arrow right" id="nextArrow" onclick="navigatePreview(1); event.stopPropagation();">
                 <i class="fa-solid fa-chevron-right text-2xl"></i>
             </div>
-        </div>
+        </div>        
         <div class="preview-counter" id="previewCounter">1/1</div>
-        <button onclick="closePreview()" class="close-btn-circle"><i class="fa-solid fa-xmark text-2xl"></i></button>
+        
+        <!-- NEW: Copy & Close Buttons Row -->
+        <div class="flex gap-3 mt-2">
+            <button onclick="copyToClipboard()" class="flex-1 bg-white/20 backdrop-blur-sm border border-white/30 text-white font-semibold py-3 px-4 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all">
+                <i class="fa-solid fa-copy"></i> Copy
+            </button>
+            <button onclick="closePreview()" class="close-btn-circle" style="margin: 0; width: 52px; height: 52px;">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Hidden Canvas for Processing -->
     <canvas id="mainCanvas" class="hidden"></canvas>
 
     <script>
-        // Font loading
-        const fonts = [
-            'SF Pro Text', 'Space Grotesk', 'Inter', 'Montserrat', 'Roboto Mono', 'Oswald',
-            'Playfair Display', 'Poppins', 'Work Sans', 'DM Sans', 'Outfit'
-        ];
-        
-        function loadFonts() {
-            fonts.map(font => {
-                document.fonts.load(`700 16px '${font}'`).catch(() => {});
+        (function() {
+            // State management
+            let uploadedFiles = [];
+            let currentPos = 'bl';
+            let modalActive = false;
+            let currentPreviewIndex = 0;
+            let fonts = [
+                'SF Pro Text', 'Space Grotesk', 'Inter', 'Montserrat', 'Roboto Mono', 'Oswald',
+                'Playfair Display', 'Poppins', 'Work Sans', 'DM Sans', 'Outfit', 'Helvetica Neue',
+                'Arial', 'Georgia', 'Times New Roman', 'Courier New'
+            ];
+
+            // ===== UTILITY FUNCTIONS =====
+            function loadFonts() {
+                fonts.forEach(font => {
+                    document.fonts.load(`700 16px '${font}'`).catch(() => {});
+                });
+            }
+            loadFonts();
+
+            // ===== TOAST NOTIFICATION =====
+            function showToast(message, type = 'success', duration = 2500) {
+                const toast = document.getElementById('toast');
+                const toastMsg = document.getElementById('toastMsg');
+                const icon = toast.querySelector('i');
+                
+                toastMsg.textContent = message;
+                toast.className = `show ${type}`;
+                
+                if (type === 'success') icon.className = 'fa-solid fa-circle-check';
+                else if (type === 'error') icon.className = 'fa-solid fa-circle-xmark';
+                else icon.className = 'fa-solid fa-circle-info';
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, duration);
+            }
+
+            // ===== HISTORY MANAGEMENT =====
+            function pushModalState() {
+                history.pushState({modal: true}, '');
+                modalActive = true;
+            }
+
+            function closeAllModals() {
+                document.getElementById('settingsModal').style.display = 'none';
+                document.getElementById('previewModal').style.display = 'none';
+                modalActive = false;
+            }
+
+            window.addEventListener('popstate', () => {
+                if (modalActive) {
+                    closeAllModals();
+                }
             });
-        }
-        loadFonts();
 
-        let uploadedFiles = [];
-        let currentPos = 'bl';
-        let modalActive = false;
-        let currentPreviewIndex = 0;
-
-        window.addEventListener('popstate', () => {
-            if (modalActive) {
-                closeAllModals();
+            // ===== SETTINGS MANAGEMENT =====
+            function saveSettings() {
+                const settings = {
+                    area: document.getElementById('areaInput').value,
+                    color: document.getElementById('textColor').value,
+                    font: document.getElementById('fontFamily').value,
+                    pos: currentPos,
+                    size: document.getElementById('textSize').value,
+                    padding: parseInt(document.getElementById('textPadding').value),
+                    showDay: document.getElementById('showDay').checked
+                };
+                localStorage.setItem('pulandoSettings', JSON.stringify(settings));
             }
-        });
 
-        // Keyboard navigation
-        window.addEventListener('keydown', (e) => {
-            if (!modalActive || document.getElementById('previewModal').style.display !== 'flex') return;
-            
-            if (e.key === 'ArrowLeft') {
-                navigatePreview(-1);
-            } else if (e.key === 'ArrowRight') {
-                navigatePreview(1);
-            } else if (e.key === 'Escape') {
-                closePreview();
+            function loadSettings() {
+                const saved = JSON.parse(localStorage.getItem('pulandoSettings')) || {
+                    area: "", 
+                    color: "#ffffff", 
+                    font: "SF Pro Text", 
+                    pos: "bl", 
+                    size: "3.5",
+                    padding: 170,
+                    showDay: true
+                };
+                
+                document.getElementById('areaInput').value = saved.area;
+                document.getElementById('textColor').value = saved.color;
+                document.getElementById('fontFamily').value = saved.font;
+                document.getElementById('textSize').value = saved.size;
+                document.getElementById('textPadding').value = saved.padding || 170;
+                document.getElementById('showDay').checked = saved.showDay !== false;
+                
+                updateSizeDisplay(saved.size);
+                updatePaddingDisplay(saved.padding || 170);
+                setPos(saved.pos);
             }
-        });
 
-        function pushModalState() {
-            history.pushState({modal: true}, '');
-            modalActive = true;
-        }
+            window.onload = loadSettings;
 
-        function closeAllModals() {
-            document.getElementById('settingsModal').style.display = 'none';
-            document.getElementById('previewModal').style.display = 'none';
-            modalActive = false;
-        }
+            // ===== UI UPDATE FUNCTIONS =====
+            function updateSizeDisplay(val) { 
+                document.getElementById('sizeVal').innerText = val + '%'; 
+                saveSettings(); 
+            }
 
-        window.onload = () => {
-            const saved = JSON.parse(localStorage.getItem('pulandoSettings')) || {
-                area: "", 
-                color: "#ffffff", 
-                font: "SF Pro Text", 
-                pos: "bl", 
-                size: "3.5",
-                showDay: true
-            };
-            document.getElementById('areaInput').value = saved.area;
-            document.getElementById('textColor').value = saved.color;
-            document.getElementById('fontFamily').value = saved.font;
-            document.getElementById('textSize').value = saved.size;
-            document.getElementById('showDay').checked = saved.showDay !== false;
-            updateSizeDisplay(saved.size);
-            setPos(saved.pos);
-        };
+            function updatePaddingDisplay(val) { 
+                document.getElementById('paddingVal').innerText = val + 'px'; 
+                saveSettings(); 
+            }
 
-        function saveSettings() {
-            const settings = {
-                area: document.getElementById('areaInput').value,
-                color: document.getElementById('textColor').value,
-                font: document.getElementById('fontFamily').value,
-                pos: currentPos,
-                size: document.getElementById('textSize').value,
-                showDay: document.getElementById('showDay').checked
-            };
-            localStorage.setItem('pulandoSettings', JSON.stringify(settings));
-        }
+            function setPos(pos) {
+                currentPos = pos;
+                document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+                document.getElementById(`pos-${pos}`).classList.add('active');
+                saveSettings();
+            }
 
-        function openSettings() { 
-            document.getElementById('settingsModal').style.display = 'flex'; 
-            pushModalState();
-        }
-        
-        function closeSettings() { 
-            document.getElementById('settingsModal').style.display = 'none'; 
-            modalActive = false;
-            if (history.state?.modal) history.back();
-        }
+            // ===== MODAL CONTROLS =====
+            function openSettings() { 
+                document.getElementById('settingsModal').style.display = 'flex'; 
+                pushModalState();
+            }
 
-        function closeOnOutside(e) { 
-            if(e.target.id === 'settingsModal' || e.target.id === 'previewModal') {
-                closeAllModals();
+            function closeSettings() { 
+                document.getElementById('settingsModal').style.display = 'none'; 
+                modalActive = false;
                 if (history.state?.modal) history.back();
             }
-        }
 
-        function updateSizeDisplay(val) { 
-            document.getElementById('sizeVal').innerText = val + '%'; 
-            saveSettings(); 
-        }
-        
-        function setPos(pos) {
-            currentPos = pos;
-            document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`pos-${pos}`).classList.add('active');
-            saveSettings();
-        }
+            function closeOnOutside(e) { 
+                if(e.target.id === 'settingsModal' || e.target.id === 'previewModal') {
+                    closeAllModals();
+                    if (history.state?.modal) history.back();
+                }
+            }
 
-        document.getElementById('imageUpload').onchange = (e) => {
-            const files = Array.from(e.target.files);
-            if (files.length > 0) document.getElementById('actionArea').classList.remove('hidden');
-            
-            files.forEach(file => {
-                const id = Math.random().toString(36).substr(2, 9);
+            // ===== IMAGE UPLOAD HANDLING =====
+            document.getElementById('imageUpload').onchange = (e) => {
+                const files = Array.from(e.target.files);
+                if (files.length > 0) document.getElementById('actionArea').classList.remove('hidden');
+                
+                files.forEach(file => {
+                    const id = Math.random().toString(36).substr(2, 9);
+                    const now = new Date();
+                    const timeStr = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}).replace('.',':');
+                    
+                    const fileData = { 
+                        id, 
+                        file, 
+                        time: timeStr, 
+                        originalHour: now.getHours(), 
+                        originalMinute: now.getMinutes(),
+                        reader: new FileReader() 
+                    };
+                    
+                    fileData.reader.onload = (ev) => {
+    const item = document.createElement('div');
+    item.className = "image-item flex items-center gap-4";
+    item.id = `item-${id}`;
+    item.innerHTML = `
+        <img src="${ev.target.result}" onclick="openPreview('${id}')" class="w-16 h-16 object-cover rounded-[20px] shadow-sm active:scale-95 transition-all cursor-pointer">
+        <div class="flex-1 flex justify-between items-center">
+            <div class="flex flex-col">
+                <span class="text-[0.65rem] font-semibold text-gray-400 uppercase">Jam</span>
+                <input type="time" class="font-bold text-blue-600 bg-transparent text-lg" value="${timeStr}" onchange="updateTime('${id}', this.value)">
+            </div>
+            <div class="flex gap-1">
+                <button onclick="copySingleImage('${id}')" class="text-blue-400 p-2 hover:bg-blue-50 rounded-full transition-all" title="Salin gambar">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+                <button onclick="removeItem('${id}')" class="text-red-400 p-2 hover:bg-red-50 rounded-full transition-all" title="Hapus">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    document.getElementById('imageList').prepend(item);
+};
+                    
+                    fileData.reader.readAsDataURL(file);
+                    uploadedFiles.push(fileData);
+                });
+            };
+
+            // ===== IMAGE MANAGEMENT =====
+            function updateTime(id, val) { 
+                const file = uploadedFiles.find(f => f.id === id);
+                if (file) file.time = val; 
+            }
+
+            function removeItem(id) { 
+                const index = uploadedFiles.findIndex(f => f.id === id);
+                uploadedFiles = uploadedFiles.filter(f => f.id !== id); 
+                document.getElementById(`item-${id}`).remove();
+                
+                if(uploadedFiles.length === 0) {
+                    document.getElementById('actionArea').classList.add('hidden');
+                    closePreview();
+                }
+            }
+
+            // ===== DATE CALCULATION =====
+            function getDynamicDate(originalHour, inputTime) {
                 const now = new Date();
-                const timeStr = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}).replace('.',':');
+                const [inputHour, inputMinute] = inputTime.split(':').map(Number);
                 
-                const fileData = { 
-                    id, 
-                    file, 
-                    time: timeStr, 
-                    originalHour: now.getHours(), 
-                    originalMinute: now.getMinutes(),
-                    reader: new FileReader() 
-                };
+                let targetDate = new Date(now);
+                targetDate.setHours(inputHour, inputMinute, 0, 0);
                 
-                fileData.reader.onload = (ev) => {
-                    const item = document.createElement('div');
-                    item.className = "image-item flex items-center gap-4";
-                    item.id = `item-${id}`;
-                    item.innerHTML = `
-                        <img src="${ev.target.result}" onclick="openPreview('${id}')" class="w-16 h-16 object-cover rounded-[20px] shadow-sm active:scale-95 transition-all cursor-pointer">
-                        <div class="flex-1 flex justify-between items-center">
-                            <div class="flex flex-col">
-                                <span class="text-[0.65rem] font-semibold text-gray-400 uppercase">Jam</span>
-                                <input type="time" class="font-bold text-blue-600 bg-transparent text-lg" value="${timeStr}" onchange="updateTime('${id}', this.value)">
-                            </div>
-                            <button onclick="removeItem('${id}')" class="text-red-400 p-2 hover:bg-red-50 rounded-full transition-all">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    `;
-                    document.getElementById('imageList').prepend(item);
-                };
+                const nowTotal = now.getHours() * 60 + now.getMinutes();
+                const inputTotal = inputHour * 60 + inputMinute;
                 
-                fileData.reader.readAsDataURL(file);
-                uploadedFiles.push(fileData);
-            });
-        };
+                if (inputTotal < nowTotal && (nowTotal - inputTotal) > (12 * 60)) {
+                    targetDate.setDate(targetDate.getDate() + 1);
+                }
+                else if (inputTotal > nowTotal && (inputTotal - nowTotal) > (12 * 60)) {
+                    targetDate.setDate(targetDate.getDate() - 1);
+                }
+                else if (inputHour === 0 && now.getHours() >= 22) {
+                    targetDate.setDate(targetDate.getDate() + 1);
+                }
+                else if (inputHour >= 22 && now.getHours() === 0) {
+                    targetDate.setDate(targetDate.getDate() - 1);
+                }
+                
+                return targetDate.toLocaleDateString('id-ID', { 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            }
 
-        function updateTime(id, val) { 
-            const file = uploadedFiles.find(f => f.id === id);
-            if (file) file.time = val; 
-        }
-        
-        function removeItem(id) { 
-            const index = uploadedFiles.findIndex(f => f.id === id);
-            uploadedFiles = uploadedFiles.filter(f => f.id !== id); 
-            document.getElementById(`item-${id}`).remove();
-            if(uploadedFiles.length === 0) {
-                document.getElementById('actionArea').classList.add('hidden');
-                closePreview();
-            }
-        }
-
-        // ===== FUNGSI TANGGAL DINAMIS YANG DIPERBAIKI UNTUK JAM 12 MALAM =====
-        function getDynamicDate(originalHour, inputTime) {
-            const now = new Date();
-            const [inputHour, inputMinute] = inputTime.split(':').map(Number);
-            
-            // Buat tanggal target dengan jam dari input
-            let targetDate = new Date(now);
-            targetDate.setHours(inputHour, inputMinute, 0, 0);
-            
-            // Konversi ke menit untuk perbandingan
-            const nowTotal = now.getHours() * 60 + now.getMinutes();
-            const inputTotal = inputHour * 60 + inputMinute;
-            
-            // LOGIKA PERGANTIAN TANGGAL YANG TEPAT:
-            
-            // Kasus 1: Sekarang jam 23:00, input jam 01:00 (besok)
-            if (inputTotal < nowTotal && (nowTotal - inputTotal) > (12 * 60)) {
-                // Input lebih kecil dan selisih > 12 jam -> BESOK
-                targetDate.setDate(targetDate.getDate() + 1);
-            }
-            // Kasus 2: Sekarang jam 01:00, input jam 23:00 (kemarin)
-            else if (inputTotal > nowTotal && (inputTotal - nowTotal) > (12 * 60)) {
-                // Input lebih besar dan selisih > 12 jam -> KEMARIN
-                targetDate.setDate(targetDate.getDate() - 1);
-            }
-            // Kasus 3: Sekarang jam 23:30, input jam 00:30 (besok - khusus jam 00)
-            else if (inputHour === 0 && now.getHours() >= 22) {
-                // Jam 12 malam (00:00) setelah jam 22:00 -> BESOK
-                targetDate.setDate(targetDate.getDate() + 1);
-            }
-            // Kasus 4: Sekarang jam 00:30, input jam 23:30 (kemarin)
-            else if (inputHour >= 22 && now.getHours() === 0) {
-                // Input jam 22-23, sekarang jam 00 -> KEMARIN
-                targetDate.setDate(targetDate.getDate() - 1);
-            }
-            
-            return targetDate.toLocaleDateString('id-ID', { 
-                day: 'numeric', 
-                month: 'long', 
-                year: 'numeric' 
-            });
-        }
-
-        // Fungsi untuk mendapatkan tanggal dengan hari (untuk preview)
-        function getPreviewDate(inputTime, originalHour, originalMinute) {
-            const [inputHour, inputMinute] = inputTime.split(':').map(Number);
-            const now = new Date();
-            
-            // Buat tanggal berdasarkan original upload
-            let date = new Date();
-            date.setHours(originalHour, originalMinute, 0, 0);
-            
-            // Set jam sesuai input
-            date.setHours(inputHour, inputMinute, 0, 0);
-            
-            // Konversi ke menit
-            const originalTotal = originalHour * 60 + originalMinute;
-            const inputTotal = inputHour * 60 + inputMinute;
-            
-            // Logika pergantian tanggal
-            if (inputTotal < originalTotal && (originalTotal - inputTotal) > (12 * 60)) {
-                date.setDate(date.getDate() + 1);
-            }
-            else if (inputTotal > originalTotal && (inputTotal - originalTotal) > (12 * 60)) {
-                date.setDate(date.getDate() - 1);
-            }
-            else if (inputHour === 0 && originalHour >= 22) {
-                date.setDate(date.getDate() + 1);
-            }
-            else if (inputHour >= 22 && originalHour === 0) {
-                date.setDate(date.getDate() - 1);
-            }
-            
-            return date.toLocaleDateString('id-ID', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-        }
-
-        function openPreview(id) {
-            const index = uploadedFiles.findIndex(f => f.id === id);
-            if (index === -1) return;
-            
-            currentPreviewIndex = index;
-            renderCanvas(uploadedFiles[currentPreviewIndex].id, 'previewCanvas');
-            document.getElementById('previewModal').style.display = 'flex';
-            updatePreviewCounter();
-            pushModalState();
-        }
-
-        function navigatePreview(direction) {
-            const newIndex = currentPreviewIndex + direction;
-            if (newIndex < 0 || newIndex >= uploadedFiles.length) return;
-            
-            currentPreviewIndex = newIndex;
-            renderCanvas(uploadedFiles[currentPreviewIndex].id, 'previewCanvas');
-            updatePreviewCounter();
-        }
-
-        function updatePreviewCounter() {
-            const counter = document.getElementById('previewCounter');
-            counter.innerText = `${currentPreviewIndex + 1}/${uploadedFiles.length}`;
-            
-            const prevArrow = document.getElementById('prevArrow');
-            const nextArrow = document.getElementById('nextArrow');
-            
-            prevArrow.classList.toggle('disabled', currentPreviewIndex === 0);
-            nextArrow.classList.toggle('disabled', currentPreviewIndex === uploadedFiles.length - 1);
-        }
-function renderCanvas(id, targetId) {
-    const item = uploadedFiles.find(f => f.id === id);
-    if (!item) return;
-    
-    const targetCanvas = document.getElementById(targetId);
-    const ctx = targetCanvas.getContext('2d');
-    const img = new Image();
-    
-    img.onload = () => {
-        
-        // ===== SET SIZE NORMAL (tanpa retina scaling) =====
-        targetCanvas.width = img.width;
-        targetCanvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-        
-        const sets = JSON.parse(localStorage.getItem('pulandoSettings')) || {
-            area: "",
-            color: "#ffffff",
-            font: "SF Pro Text",
-            pos: "bl",
-            size: "3.5",
-            showDay: true
-        };
-        
-        const fontSize = img.width * (parseFloat(sets.size) / 100);
-        
-        const EDGE_PADDING = 170; // 🔥 solid 14px
-        const LINE_GAP = 1;
-        
-        // ===== SET FONT =====
-        ctx.font = `700 ${fontSize}px '${sets.font}', 'Space Grotesk', sans-serif`;
-        ctx.fillStyle = sets.color;
-        
-        // ===== SHADOW (hanya untuk area, nanti reset) =====
-        ctx.shadowColor = "rgba(0,0,0,0.7)";
-        ctx.shadowBlur = fontSize / 1.2;
-        ctx.shadowOffsetX = 3;
-        ctx.shadowOffsetY = 3;
-        
-        // ===== FORMAT TEXT =====
-        const dateText = getDynamicDate(item.originalHour, item.time);
-        
-        let displayText;
-        
-        if (targetId === 'previewCanvas') {
-            const previewDate = getPreviewDate(
-                item.time,
-                item.originalHour,
-                item.originalMinute
-            );
-            
-            displayText = sets.showDay ?
-                `${previewDate} pukul ${item.time.replace(':', '.')}` :
-                `${(previewDate.split(', ')[1] || previewDate)} pukul ${item.time.replace(':', '.')}`;
-        } else {
-            displayText = sets.showDay ?
-                `${new Date(dateText).toLocaleDateString('id-ID', {
+            function getPreviewDate(inputTime, originalHour, originalMinute) {
+                const [inputHour, inputMinute] = inputTime.split(':').map(Number);
+                const now = new Date();
+                
+                let date = new Date();
+                date.setHours(originalHour, originalMinute, 0, 0);
+                date.setHours(inputHour, inputMinute, 0, 0);
+                
+                const originalTotal = originalHour * 60 + originalMinute;
+                const inputTotal = inputHour * 60 + inputMinute;
+                
+                if (inputTotal < originalTotal && (originalTotal - inputTotal) > (12 * 60)) {
+                    date.setDate(date.getDate() + 1);
+                }
+                else if (inputTotal > originalTotal && (inputTotal - originalTotal) > (12 * 60)) {
+                    date.setDate(date.getDate() - 1);
+                }
+                else if (inputHour === 0 && originalHour >= 22) {
+                    date.setDate(date.getDate() + 1);
+                }
+                else if (inputHour >= 22 && originalHour === 0) {
+                    date.setDate(date.getDate() - 1);
+                }
+                
+                return date.toLocaleDateString('id-ID', {
                     weekday: 'long',
                     day: 'numeric',
                     month: 'long',
                     year: 'numeric'
-                })} pukul ${item.time.replace(':', '.')}` :
-                `${dateText} pukul ${item.time.replace(':', '.')}`;
-        }
-        
-        // ===== UKUR TINGGI TEKS ASLI (SUPER PRESISI) =====
-        const areaMetrics = ctx.measureText(sets.area || "");
-        const areaHeight =
-            areaMetrics.actualBoundingBoxAscent +
-            areaMetrics.actualBoundingBoxDescent;
-        
-        const dateMetrics = ctx.measureText(displayText);
-        const dateHeight =
-            dateMetrics.actualBoundingBoxAscent +
-            dateMetrics.actualBoundingBoxDescent;
-        
-        // ===== POSISI X =====
-        let x;
-        if (sets.pos.includes('l')) {
-            ctx.textAlign = "left";
-            x = EDGE_PADDING;
-        } else if (sets.pos.includes('c')) {
-            ctx.textAlign = "center";
-            x = img.width / 2;
-        } else {
-            ctx.textAlign = "right";
-            x = img.width - EDGE_PADDING;
-        }
-        
-        // ===== POSISI Y =====
-        if (sets.pos.startsWith('b')) {
-            // ===== BOTTOM =====
-            ctx.textBaseline = "bottom";
-            
-            const bottomEdge = img.height - EDGE_PADDING;
-            
-            if (sets.area) {
-                // Area tepat 14px dari bawah
-                ctx.fillText(sets.area, x, bottomEdge);
-                
-                // Reset shadow sebelum tanggal
-                ctx.shadowColor = "transparent";
-                ctx.shadowBlur = 0;
-                
-                // Tanggal tepat di atas area
-                ctx.fillText(
-                    displayText,
-                    x,
-                    bottomEdge - areaHeight - LINE_GAP
-                );
-            } else {
-                ctx.shadowColor = "transparent";
-                ctx.shadowBlur = 0;
-                
-                // Kalau tanpa area, tanggal langsung 14px dari bawah
-                ctx.fillText(displayText, x, bottomEdge);
+                });
             }
-            
-        } else {
-            // ===== TOP =====
-            ctx.textBaseline = "top";
-            
-            const topEdge = EDGE_PADDING;
-            
-            if (sets.area) {
-                // Area tepat 14px dari atas
-                ctx.fillText(sets.area, x, topEdge);
+
+            // ===== PREVIEW FUNCTIONS =====
+            function openPreview(id) {
+                const index = uploadedFiles.findIndex(f => f.id === id);
+                if (index === -1) return;
                 
-                // Reset shadow sebelum tanggal
-                ctx.shadowColor = "transparent";
-                ctx.shadowBlur = 0;
-                
-                // Tanggal tepat di bawah area
-                ctx.fillText(
-                    displayText,
-                    x,
-                    topEdge + areaHeight + LINE_GAP
-                );
-            } else {
-                ctx.shadowColor = "transparent";
-                ctx.shadowBlur = 0;
-                
-                // Kalau tanpa area, tanggal langsung 14px dari atas
-                ctx.fillText(displayText, x, topEdge);
+                currentPreviewIndex = index;
+                renderCanvas(uploadedFiles[currentPreviewIndex].id, 'previewCanvas');
+                document.getElementById('previewModal').style.display = 'flex';
+                updatePreviewCounter();
+                pushModalState();
             }
-        }
-        
-        // Cleanup shadow
-        ctx.shadowColor = "transparent";
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-    };
+
+            function navigatePreview(direction) {
+                const newIndex = currentPreviewIndex + direction;
+                if (newIndex < 0 || newIndex >= uploadedFiles.length) return;
+                
+                currentPreviewIndex = newIndex;
+                renderCanvas(uploadedFiles[currentPreviewIndex].id, 'previewCanvas');
+                updatePreviewCounter();
+            }
+
+            function updatePreviewCounter() {
+                const counter = document.getElementById('previewCounter');
+                counter.innerText = `${currentPreviewIndex + 1}/${uploadedFiles.length}`;
+                
+                const prevArrow = document.getElementById('prevArrow');
+                const nextArrow = document.getElementById('nextArrow');
+                
+                prevArrow.classList.toggle('disabled', currentPreviewIndex === 0);
+                nextArrow.classList.toggle('disabled', currentPreviewIndex === uploadedFiles.length - 1);
+            }
+
+            function closePreview() { 
+                document.getElementById('previewModal').style.display = 'none'; 
+                modalActive = false;
+                if (history.state?.modal) history.back();
+            }
+
+            // ===== TEXT SHADOW UTILITIES =====
+            function setupTextShadow(ctx, fontSize, intensity = 1) {
+                const blur = 1;
+                const offset = .4;
+                ctx.shadowColor = `rgba(0, 0, 0, 0.5`;
+                ctx.shadowBlur = blur;
+                ctx.shadowOffsetX = offset;
+                ctx.shadowOffsetY = offset;
+            }
+
+            function clearTextShadow(ctx) {
+                ctx.shadowColor = "transparent";
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            }
+
+            // ===== CANVAS RENDERING =====
+            function renderCanvas(id, targetId) {
+                const item = uploadedFiles.find(f => f.id === id);
+                if (!item) return;
+                
+                const targetCanvas = document.getElementById(targetId);
+                const ctx = targetCanvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    targetCanvas.width = img.width;
+                    targetCanvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    const sets = JSON.parse(localStorage.getItem('pulandoSettings')) || {
+                        area: "",
+                        color: "#ffffff",
+                        font: "SF Pro Text",
+                        pos: "bl",
+                        size: "3.5",
+                        padding: 170,
+                        showDay: true
+                    };
+                    
+                    const fontSize = img.width * (parseFloat(sets.size) / 100);
+                    const EDGE_PADDING = sets.padding || 170;
+                    const LINE_GAP = fontSize * 0.1;
+                    
+                    ctx.font = `700 ${fontSize}px '${sets.font}', 'Space Grotesk', sans-serif`;
+                    ctx.fillStyle = sets.color;
+                    
+                    // Format text
+                    const dateText = getDynamicDate(item.originalHour, item.time);
+                    
+                    let displayText;
+                    
+                    if (targetId === 'previewCanvas') {
+                        const previewDate = getPreviewDate(
+                            item.time,
+                            item.originalHour,
+                            item.originalMinute
+                        );
+                        
+                        displayText = sets.showDay ?
+                            `${previewDate} pukul ${item.time.replace(':', '.')}` :
+                            `${(previewDate.split(', ')[1] || previewDate)} • ${item.time.replace(':', '.')}`;
+                    } else {
+                        displayText = sets.showDay ?
+                            `${new Date(dateText).toLocaleDateString('id-ID', {
+                                weekday: 'long',
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            })} • ${item.time.replace(':', '.')}` :
+                            `${dateText} • ${item.time.replace(':', '.')}`;
+                    }
+                    
+                    // Measure text dimensions
+                    const areaMetrics = ctx.measureText(sets.area || "");
+                    const areaHeight = areaMetrics.actualBoundingBoxAscent + areaMetrics.actualBoundingBoxDescent;
+                    
+                    const dateMetrics = ctx.measureText(displayText);
+                    const dateHeight = dateMetrics.actualBoundingBoxAscent + dateMetrics.actualBoundingBoxDescent;
+                    
+                    // Position X based on alignment
+                    let x;
+                    if (sets.pos.includes('l')) {
+                        ctx.textAlign = "left";
+                        x = EDGE_PADDING;
+                    } else if (sets.pos.includes('c')) {
+                        ctx.textAlign = "center";
+                        x = img.width / 2;
+                    } else {
+                        ctx.textAlign = "right";
+                        x = img.width - EDGE_PADDING;
+                    }
+                    
+                    // Draw text with shadow
+                    if (sets.pos.startsWith('b')) {
+                        // BOTTOM POSITION
+                        ctx.textBaseline = "bottom";
+                        const bottomEdge = img.height - EDGE_PADDING;
+                        
+                        if (sets.area) {
+                            setupTextShadow(ctx, fontSize, 1);
+                            ctx.fillText(sets.area, x, bottomEdge);
+                            
+                            clearTextShadow(ctx);
+                            setupTextShadow(ctx, fontSize * 0.95, 0.9);
+                            ctx.fillText(
+                                displayText,
+                                x,
+                                bottomEdge - areaHeight - LINE_GAP
+                            );
+                        } else {
+                            clearTextShadow(ctx);
+                            setupTextShadow(ctx, fontSize, 1);
+                            ctx.fillText(displayText, x, bottomEdge);
+                        }
+                        
+                    } else {
+                        // TOP POSITION
+                        ctx.textBaseline = "top";
+                        const topEdge = EDGE_PADDING;
+                        
+                        if (sets.area) {
+                            setupTextShadow(ctx, fontSize, 1);
+                            ctx.fillText(sets.area, x, topEdge);
+                            
+                            clearTextShadow(ctx);
+                            setupTextShadow(ctx, fontSize * 0.95, 0.9);
+                            ctx.fillText(
+                                displayText,
+                                x,
+                                topEdge + areaHeight + LINE_GAP
+                            );
+                        } else {
+                            clearTextShadow(ctx);
+                            setupTextShadow(ctx, fontSize, 1);
+                            ctx.fillText(displayText, x, topEdge);
+                        }
+                    }
+                    
+                    clearTextShadow(ctx);
+                };            
+                img.src = item.reader.result;
+            }
+
+            // ===== CLIPBOARD FUNCTIONS =====
+            async function copyToClipboard() {
+                const canvas = document.getElementById('previewCanvas');
+                const currentFile = uploadedFiles[currentPreviewIndex];
+                
+                if (!canvas || !currentFile) {
+                    showToast('Tidak ada gambar untuk disalin', 'error');
+                    return;
+                }
+                
+                // Show loading state
+                const copyBtn = document.querySelector('#previewModal button[onclick="copyToClipboard()"]');
+                const originalHTML = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyalin...';
+                copyBtn.disabled = true;
+                
+                try {
+                    canvas.toBlob(async (blob) => {
+                        if (!blob) {
+                            showToast('Gagal memproses gambar', 'error');
+                            resetCopyButton(copyBtn, originalHTML);
+                            return;
+                        }
+                        
+                        try {
+                            // Try modern Clipboard API with image support
+                            if (navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
+                                await navigator.clipboard.write([
+                                    new ClipboardItem({ 'image/png': blob })
+                                ]);
+                                showToast('✅ Gambar berhasil disalin ke clipboard!', 'success');
+                            } 
+                            // Fallback for browsers that don't support ClipboardItem
+                            else if (navigator.clipboard && navigator.clipboard.writeText) {
+                                showToast('📥 Browser tidak support copy image. Download sebagai alternatif.', 'info', 4000);
+                                setTimeout(() => downloadCurrentImage(), 1500);
+                            }
+                            else {
+                                throw new Error('Clipboard API not supported');
+                            }
+                        } catch (err) {
+                            console.warn('Clipboard write failed:', err);
+                            showToast('📥 Men-download gambar sebagai alternatif...', 'info', 3000);
+                            setTimeout(() => downloadCurrentImage(), 1000);
+                        }
+                        
+                        resetCopyButton(copyBtn, originalHTML);
+                    }, 'image/png', 0.95);
+                    
+                } catch (err) {
+                    console.error('Copy error:', err);
+                    showToast('❌ Gagal menyalin. Coba download manual.', 'error');
+                    resetCopyButton(copyBtn, originalHTML);
+                }
+            }
+            // ===== COPY SINGLE IMAGE FROM LIST =====
+function copySingleImage(id) {
+    const index = uploadedFiles.findIndex(f => f.id === id);
+    if (index === -1) return;
     
-    img.src = item.reader.result;
+    const item = uploadedFiles[index];
+    currentPreviewIndex = index;
+    
+    // Render ke canvas tersembunyi
+    renderCanvas(item.id, 'mainCanvas');
+    
+    // Tampilkan loading
+    showToast('🔄 Menyiapkan gambar...', 'info', 1000);
+    
+    // Tunggu sebentar untuk rendering
+    setTimeout(() => {
+        const canvas = document.getElementById('mainCanvas');
+        
+        canvas.toBlob(async (blob) => {
+            if (!blob) {
+                showToast('Gagal memproses gambar', 'error');
+                return;
+            }
+            
+            try {
+                // Coba copy ke clipboard
+                if (navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ 'image/png': blob })
+                    ]);
+                    showToast(`✅ Gambar ${index + 1} disalin!`, 'success');
+                } else {
+                    // Fallback: download
+                    const link = document.createElement('a');
+                    link.download = `PULANDO_${item.time.replace(':', '')}.jpg`;
+                    link.href = canvas.toDataURL('image/jpeg', 0.95);
+                    link.click();
+                    showToast('📥 Gambar di-download (copy tidak didukung)', 'info', 3000);
+                }
+            } catch (err) {
+                console.error('Copy error:', err);
+                showToast('❌ Gagal menyalin', 'error');
+            }
+        }, 'image/png', 0.95);
+    }, 300);
 }
 
+            function resetCopyButton(btn, originalHTML) {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
 
-        function closePreview() { 
-            document.getElementById('previewModal').style.display = 'none'; 
-            modalActive = false;
-            if (history.state?.modal) history.back();
-        }
-
-        async function processAll() {
-            for (const item of uploadedFiles) {
-                renderCanvas(item.id, 'mainCanvas');
-                await new Promise(r => setTimeout(r, 500));
+            function downloadCurrentImage() {
+                const canvas = document.getElementById('previewCanvas');
+                const currentFile = uploadedFiles[currentPreviewIndex];
+                
+                if (!canvas || !currentFile) return;
+                
                 const link = document.createElement('a');
-                link.download = `PULANDO_${item.time.replace(':', '')}.jpg`;
-                link.href = document.getElementById('mainCanvas').toDataURL('image/jpeg', 0.9);
+                link.download = `PULANDO_${currentFile.time.replace(':', '')}_copy.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
                 link.click();
             }
-        }
+
+            // ===== PROCESS ALL IMAGES =====
+            async function processAll() {
+                showToast('🔄 Memproses gambar...', 'info', 2000);
+                
+                for (let i = 0; i < uploadedFiles.length; i++) {
+                    const item = uploadedFiles[i];
+                    renderCanvas(item.id, 'mainCanvas');
+                    
+                    // Small delay for rendering
+                    await new Promise(r => setTimeout(r, 300));
+                    
+                    const link = document.createElement('a');
+                    link.download = `PULANDO_${item.time.replace(':', '')}.jpg`;
+                    link.href = document.getElementById('mainCanvas').toDataURL('image/jpeg', 0.9);
+                    link.click();                
+                    
+                    // Update progress
+                    if (i === uploadedFiles.length - 1) {
+                        showToast(`✅ Selesai! ${uploadedFiles.length} gambar disimpan`, 'success', 3500);
+                    }
+                }
+            }
+
+            // ===== KEYBOARD NAVIGATION =====
+            window.addEventListener('keydown', (e) => {
+                if (!modalActive || document.getElementById('previewModal').style.display !== 'flex') return;
+                
+                if (e.key === 'ArrowLeft') {
+                    navigatePreview(-1);
+                } else if (e.key === 'ArrowRight') {
+                    navigatePreview(1);
+                } else if (e.key === 'Escape') {
+                    closePreview();
+                } else if (e.key === 'c' && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    copyToClipboard();
+                }
+            });
+
+            // ===== EXPOSE GLOBAL FUNCTIONS =====
+            window.openSettings = openSettings;
+            window.closeSettings = closeSettings;
+            window.closeOnOutside = closeOnOutside;
+            window.updateSizeDisplay = updateSizeDisplay;
+            window.updatePaddingDisplay = updatePaddingDisplay;
+            window.setPos = setPos;
+            window.updateTime = updateTime;
+            window.removeItem = removeItem;
+            window.openPreview = openPreview;
+            window.navigatePreview = navigatePreview;
+            window.closePreview = closePreview;
+            window.copyToClipboard = copyToClipboard;
+            window.processAll = processAll;
+            window.saveSettings = saveSettings;
+            // ===== EXPOSE GLOBAL FUNCTIONS =====
+window.copySingleImage = copySingleImage; // TAMBAHKAN INI
+window.fallbackDownload = fallbackDownload; // TAMBAHKAN INI JUGA
+        })();
     </script>
 </body>
 </html>
