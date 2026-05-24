@@ -1,351 +1,243 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Shiftku</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+    <title>ShiftKu Plus - Smart Shift Manager</title>
     
-    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    
-    <!-- Meta tags untuk PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Shiftku">
-    <meta name="theme-color" content="#242a3d">
-    
-    <!-- Untuk iOS -->
+    <meta name="apple-mobile-web-app-title" content="ShiftKu">
+    <meta name="theme-color" content="#0d9488">
     <link rel="apple-touch-icon" href="img/icon.png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: #f3f4f8;
-            background-image: radial-gradient(circle at 20% 30%, rgba(180, 200, 255, 0.3) 0%, transparent 30%),
-                              radial-gradient(circle at 90% 70%, rgba(255, 200, 220, 0.2) 0%, transparent 40%);
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            color: #1b1e28;
+        html, body {
+            height: 100%;
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        .glass-morph {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.15);
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
         }
-        .glass-card {
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .theme-transition {
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        button {
+            transition: transform 0.16s ease-out;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== LIQUID GLASS ===== */
+        .liquid-glass {
             background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.8);
             box-shadow: 0 12px 40px -12px rgba(0, 30, 60, 0.15);
         }
+
+        .liquid-glass-light {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(15px) saturate(150%);
+            -webkit-backdrop-filter: blur(15px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 30px -8px rgba(0, 20, 40, 0.1);
+        }
+
         .blob-soft {
             background: linear-gradient(145deg, #ffffff, #f0f3fe);
             border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
             animation: morph 8s ease-in-out infinite;
         }
+
         @keyframes morph {
             0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
             50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
             100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
         }
-        .shift-morning { background: #e0f0e8; color: #0a4d3c; }
-        .shift-night { background: #fdead4; color: #8f4b1a; }
-        .shift-off { background: #ffe2e2; color: #b33636; }
-        .badge-morning { background: #d1eadd; color: #0f5c47; }
-        .badge-night { background: #fcddba; color: #b1520e; }
-        .badge-off { background: #ffcece; color: #b33a3a; }
-        .badge-spl { background: #dbeafe; color: #1e3a8a; border: 1px solid #3b82f6; }
-        .badge-no-spl { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
-        
-        /* ===== PERBAIKAN DAY TILE UNTUK HP ===== */
-        .day-tile {
-            aspect-ratio: 1/1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+
+        .calendar-cell {
+            aspect-ratio: 1;
             transition: all 0.18s ease;
-            position: relative;
-            border: 1px solid rgba(255,255,255,0.5);
-            padding: 4px 2px;
         }
-        
-        .day-tile:active { transform: scale(0.94); background: #f5f7ff; }
-        
-        .day-tile.today {
-            background: #242a3d;
-            color: white;
-            border: 2px solid #c0d0ff;
-            box-shadow: 0 15px 20px -8px rgba(30, 40, 80, 0.25);
+
+        .calendar-cell:active {
+            transform: scale(0.94);
+            background: #f5f7ff;
         }
-        
-        /* Perbaikan untuk tanggal SPL - bintang tidak nutupin angka */
-        .day-tile.spl-date {
-            border: 2px solid #fbbf24;
-            position: relative;
-            overflow: visible;
+
+        /* Badge Styles */
+        .badge-pagi { background: #0d9488; color: white; }
+        .badge-malam { background: #1e3a5f; color: white; }
+        .badge-off { background: #e8635a; color: white; }
+        .badge-dapat-spl { background: #dbeafe; color: #1e3a8a; border: 1px solid #3b82f6; }
+        .badge-tidak-spl { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+
+        .spl-list-item {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: all 0.2s;
         }
-        
-        /* Indikator SPL di pojok luar - TIDAK NUTUPIN ANGKA */
-        .spl-indicator {
-            position: absolute;
-            top: -3px;
-            right: -3px;
-            width: 20px;
-            height: 20px;
-            border-radius: 30px;
-            background: #fbbf24;
-            color: #78350f;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(251, 191, 36, 0.4);
-            z-index: 10;
+
+        .spl-list-item:active {
+            transform: scale(0.98);
         }
-        
-        /* Untuk tanggal di tile SPL, beri jarak kecil */
-        .day-tile.spl-date .text-base {
-            position: relative;
-            z-index: 1;
-            margin-top: 2px;
-        }
-        
-        /* Badge shift (P/M/OFF) di HP */
-        .day-tile .text-[0.55rem] {
-            font-size: 0.5rem !important;
-            padding: 2px 6px !important;
-            margin-top: 2px;
-            max-width: 90%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            border-radius: 20px;
-            font-weight: 700;
-        }
-        
-        /* Untuk tile today, badge shift disesuaikan */
-        .day-tile.today .text-[0.55rem] {
-            background: rgba(255,255,255,0.2) !important;
-            color: white !important;
-        }
-        
-        /* Media query untuk HP kecil */
-        @media (max-width: 380px) {
-            .day-tile {
-                border-radius: 14px;
-                font-size: 0.85rem;
-            }
-            
-            .spl-indicator {
-                width: 18px;
-                height: 18px;
-                font-size: 8px;
-                top: -4px;
-                right: -4px;
-            }
-            
-            .day-tile .text-[0.55rem] {
-                font-size: 0.45rem !important;
-                padding: 1px 4px !important;
-            }
-        }
-        
-        /* Untuk HP sangat kecil (iPhone SE) */
-        @media (max-width: 340px) {
-            .day-tile {
-                border-radius: 12px;
-                font-size: 0.75rem;
-            }
-            
-            .spl-indicator {
-                width: 16px;
-                height: 16px;
-                font-size: 7px;
-                top: -4px;
-                right: -4px;
-            }
-        }
-        
+
         .select-soft {
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 40px;
-            padding: 0.6rem 2.5rem 0.6rem 1.5rem;
+            padding: 0.4rem 2.2rem 0.4rem 1.2rem;
             font-weight: 600;
-            font-size: 0.9rem;
-            color: #1e293b;
+            font-size: 0.75rem;
+            color: white;
             outline: none;
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23333'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1rem;
-        }
-        .nav-item { transition: all 0.15s; }
-        .nav-item.active {
-            background: #242a3d;
-            color: white;
-            padding: 0.5rem 1.2rem;
-            border-radius: 40px;
-        }
-        .nav-item.active i { color: white; }
-        .spl-list-item {
-            background: white;
-            border-radius: 20px;
-            padding: 0.75rem 1rem;
-            border: 1px solid rgba(255,255,255,0.8);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            background-position: right 0.8rem center;
+            background-size: 0.8rem;
+            cursor: pointer;
             transition: all 0.2s;
         }
-        .spl-list-item:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
-        
-        /* Notifikasi offline */
-        #offline-notification {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #242a3d;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 9999;
-            animation: slideUp 0.3s ease;
-            border: 1px solid #c0d0ff;
-            backdrop-filter: blur(10px);
+
+        .select-soft:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
-        
-        @keyframes slideUp {
-            from {
-                transform: translate(-50%, 100%);
-                opacity: 0;
-            }
-            to {
-                transform: translate(-50%, 0);
-                opacity: 1;
-            }
+
+        .scroll-hidden::-webkit-scrollbar {
+            display: none;
         }
-        
-        /* ===== POPUP INSTALL ANDROID ===== */
+        .scroll-hidden {
+            scrollbar-width: none;
+        }
+
+        /* ===== POPUP INSTALL ===== */
         #install-popup {
             position: fixed;
-            bottom: 90px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
-            max-width: 340px;
+            max-width: 360px;
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 22px;
-            box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.3);
+            border-radius: 28px;
+            padding: 24px;
+            box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.9);
             z-index: 10000;
             animation: slideUpPopup 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes slideUpPopup {
-            from {
-                bottom: -100px;
-                opacity: 0;
-                transform: translateX(-50%) scale(0.9);
-            }
-            to {
-                bottom: 90px;
-                opacity: 1;
-                transform: translateX(-50%) scale(1);
-            }
+            from { bottom: -100px; opacity: 0; transform: translateX(-50%) scale(0.9); }
+            to { bottom: 30px; opacity: 1; transform: translateX(-50%) scale(1); }
         }
+
+        @keyframes slideDown {
+            from { bottom: 30px; opacity: 1; transform: translateX(-50%) scale(1); }
+            to { bottom: -100px; opacity: 0; transform: translateX(-50%) scale(0.9); }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
         .popup-header {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 18px;
+            gap: 14px;
+            margin-bottom: 16px;
         }
 
         .popup-icon {
-            width: 65px;
-            height: 65px;
-            background: linear-gradient(145deg, #242a3d, #1a1f2e);
-            border-radius: 22px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(145deg, #0d9488, #0f766e);
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 32px;
-            box-shadow: 0 10px 20px -5px rgba(36, 42, 61, 0.4);
+            font-size: 28px;
+            box-shadow: 0 8px 20px -5px rgba(13, 148, 136, 0.4);
         }
 
         .popup-title {
-            font-weight: 800;
-            font-size: 1.4rem;
-            color: #242a3d;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #0d9488;
             line-height: 1.2;
         }
 
         .popup-subtitle {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #64748b;
-            margin-top: 4px;
+            margin-top: 3px;
             font-weight: 500;
         }
 
         .popup-features {
-            background: #f1f5f9;
-            border-radius: 22px;
-            padding: 16px;
-            margin-bottom: 22px;
+            background: #f0fdfa;
+            border-radius: 18px;
+            padding: 14px;
+            margin-bottom: 18px;
         }
 
         .popup-feature-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 6px 0;
-            font-size: 0.9rem;
+            gap: 10px;
+            padding: 4px 0;
+            font-size: 0.85rem;
             color: #1e293b;
         }
 
         .popup-feature-item i {
-            color: #242a3d;
-            width: 22px;
-            font-size: 1rem;
+            color: #0d9488;
+            width: 20px;
+            font-size: 0.9rem;
         }
 
         .popup-buttons {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .popup-btn {
             flex: 1;
-            padding: 14px 0;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 0.95rem;
+            padding: 12px 0;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
             border: none;
             cursor: pointer;
             transition: all 0.2s;
@@ -353,14 +245,9 @@
         }
 
         .popup-btn-primary {
-            background: #242a3d;
+            background: #0d9488;
             color: white;
-            box-shadow: 0 10px 20px -5px rgba(36, 42, 61, 0.4);
-        }
-
-        .popup-btn-primary:hover {
-            background: #1a1f2e;
-            transform: scale(0.98);
+            box-shadow: 0 8px 20px -5px rgba(13, 148, 136, 0.4);
         }
 
         .popup-btn-primary:active {
@@ -372,38 +259,31 @@
             color: #475569;
         }
 
-        .popup-btn-secondary:hover {
-            background: #cbd5e1;
-            transform: scale(0.98);
-        }
-
         .popup-btn-secondary:active {
             transform: scale(0.95);
         }
 
         .popup-close {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 28px;
-            height: 28px;
-            border-radius: 30px;
+            top: 10px;
+            right: 10px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
             background: rgba(0,0,0,0.05);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: #64748b;
             transition: all 0.2s;
         }
 
-        .popup-close:hover {
+        .popup-close:active {
             background: rgba(0,0,0,0.1);
-            transform: rotate(90deg);
         }
-        
-        /* Overlay untuk popup */
+
         .popup-overlay {
             position: fixed;
             top: 0;
@@ -411,525 +291,417 @@
             right: 0;
             bottom: 0;
             background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(2px);
             z-index: 9999;
             animation: fadeIn 0.3s ease;
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+
+        #offline-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            z-index: 9998;
+            animation: fadeIn 0.3s ease;
+            white-space: nowrap;
         }
-        
-        @keyframes slideDown {
-            from {
-                bottom: 90px;
-                opacity: 1;
-                transform: translateX(-50%) scale(1);
+
+        /* ===== MEDIA QUERIES ===== */
+        @media (max-width: 380px) {
+            .calendar-cell {
+                border-radius: 12px !important;
             }
-            to {
-                bottom: -100px;
-                opacity: 0;
-                transform: translateX(-50%) scale(0.9);
+            
+            .calendar-cell .text-\[15px\] {
+                font-size: 13px !important;
+            }
+            
+            .calendar-cell .text-\[11px\] {
+                font-size: 9px !important;
+                padding-left: 6px !important;
+                padding-right: 6px !important;
+            }
+
+            #todayCard {
+                padding: 0.9rem !important;
+                height: 85px !important;
+            }
+
+            #todayCard .text-\[40px\] {
+                font-size: 32px !important;
+            }
+
+            #todayCard .text-\[17px\] {
+                font-size: 14px !important;
+            }
+
+            #todayCard .text-\[13px\] {
+                font-size: 11px !important;
+            }
+
+            .spl-list-item {
+                padding: 0.6rem 0.8rem !important;
             }
         }
-        
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
+
+        @media (max-width: 340px) {
+            .calendar-cell {
+                border-radius: 10px !important;
+            }
+            
+            .calendar-cell .text-\[15px\] {
+                font-size: 11px !important;
+            }
+            
+            .calendar-cell .text-\[11px\] {
+                font-size: 7px !important;
+                padding-left: 4px !important;
+                padding-right: 4px !important;
+            }
         }
     </style>
 </head>
-<body class="p-5 pb-0 relative">
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <span class="text-xs font-semibold text-indigo-400/80 tracking-widest">Shiftku.</span>
-            <h1 class="text-3xl font-bold tracking-tight" id="headerDate">—</h1>
-        </div>
-        <div class="relative">
-            <select id="teamSelect" onchange="saveTeam()" class="select-soft cursor-pointer appearance-none">
-                <option value="A"> Shift A</option>
-                <option value="B"> Shift B</option>
-                <option value="C"> Shift C</option>
+
+<body id="appBody" class="text-slate-800 theme-transition bg-[#0d9488] h-full flex flex-col select-none overflow-hidden">
+
+<div class="h-full flex flex-col pt-6 max-w-2xl mx-auto w-full relative">
+
+    <div class="px-6 flex items-center justify-between text-white relative z-10">
+        <button id="prevBtn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 active:scale-95 transition backdrop-blur-sm hover:bg-white/20">
+            <i class="fa-solid fa-chevron-left text-[16px]"></i>
+        </button>
+
+        <div class="flex flex-col items-center">
+            <div id="monthYear" class="text-[22px] uppercase font-bold tracking-widest leading-none mb-1"></div>
+            <select id="shiftSelect" class="select-soft">
+                <option value="A" class="text-slate-800">SHIFT A</option>
+                <option value="B" class="text-slate-800">SHIFT B</option>
+                <option value="C" class="text-slate-800">SHIFT C</option>
             </select>
         </div>
+
+        <button id="nextBtn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 active:scale-95 transition backdrop-blur-sm hover:bg-white/20">
+            <i class="fa-solid fa-chevron-right text-[16px]"></i>
+        </button>
     </div>
 
-    <div class="glass-card rounded-[40px] p-7 mb-6 relative overflow-hidden">
-        <div class="blob-soft absolute -top-10 -right-10 w-48 h-48 opacity-30"></div>
-        <div class="relative z-10">
-            <div class="flex items-start justify-between">
+    <div class="bg-slate-50 rounded-t-[38px] flex-1 flex flex-col relative mt-16 shadow-[0_-10px_30px_rgba(0,0,0,0.15)]">
+
+        <div id="todayCard" class="absolute left-5 right-5 -top-10 rounded-[24px] p-5 shadow-lg border-4 border-white flex items-center justify-between z-30 theme-transition h-[100px] overflow-hidden">
+            <div class="blob-soft absolute -top-8 -right-8 w-40 h-40 opacity-20"></div>
+        </div>
+
+        <div class="pt-20 px-5 flex-1 flex flex-col min-h-0 pb-4">
+
+            <div id="calendarTab" class="tab-content flex-1 flex flex-col min-h-0">
+                <div id="daysName" class="grid grid-cols-7 gap-1 text-center mb-2 text-slate-400 font-semibold text-[12px] tracking-wider">
+                </div>
+
+                <div class="flex-1 overflow-y-auto scroll-hidden">
+                    <div id="calendarDates" class="grid grid-cols-7 gap-1.5 fade-in text-slate-700 pb-2">
+                    </div>
+                </div>
+
+                <div class="mt-3 liquid-glass-light rounded-[20px] p-3.5 flex flex-col">
+                    <div class="text-slate-400 text-[11px] font-semibold uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-umbrella-beach"></i> Libur Nasional & SPL
+                    </div>
+                    <div id="holidayList" class="flex flex-col gap-2 max-h-44 overflow-y-auto scroll-hidden">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const MONTH_NAMES = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    const DAY_NAMES = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+
+    const SHIFT_PATTERNS = {
+        A: ["M", "Off", "P"],
+        B: ["Off", "P", "M"],
+        C: ["P", "M", "Off"]
+    };
+
+    const THEMES = {
+        P: {
+            bg: "bg-[#0d9488]",
+            card: "bg-[#ccfbf1]",
+            text: "text-[#0f766e]",
+            name: "Pagi",
+            time: "08:00 - 16:00",
+            icon: "fa-sun",
+            capsule: "badge-pagi",
+        },
+        M: {
+            bg: "bg-[#1e3a5f]",
+            card: "bg-[#e0f2fe]",
+            text: "text-[#1e3a5f]",
+            name: "Malam",
+            time: "16:00 - 24:00",
+            icon: "fa-moon",
+            capsule: "badge-malam",
+        },
+        Off: {
+            bg: "bg-[#e8635a]",
+            card: "bg-[#fee2e2]",
+            text: "text-[#991b1b]",
+            name: "Libur",
+            time: "Tidak ada jadwal",
+            icon: "fa-bed",
+            capsule: "badge-off",
+        }
+    };
+
+    const NATIONAL_HOLIDAYS = {
+        "2026-01-01": "Tahun Baru", "2026-02-16": "Isra Mikraj", "2026-03-19": "Nyepi",
+        "2026-03-31": "Idul Fitri", "2026-04-01": "Idul Fitri", "2026-05-01": "Hari Buruh",
+        "2026-05-14": "Kenaikan Isa Almasih", "2026-05-27": "Idul adha", "2026-06-01": "Hari Lahir Pancasila",
+        "2026-08-17": "Hari Kemerdekaan", "2026-12-25": "Natal"
+    };
+
+    let currentDate = new Date();
+    let selectedShift = localStorage.getItem("selectedShift") || "A";
+    const BASE_DATE_UTC = Date.UTC(2025, 4, 25);
+
+    function getShiftStatus(shift, year, month, day) {
+        const targetUTC = Date.UTC(year, month, day);
+        const diffDays = Math.floor((targetUTC - BASE_DATE_UTC) / 86400000);
+        const cycle = ((diffDays % 3) + 3) % 3;
+        return SHIFT_PATTERNS[shift][cycle];
+    }
+
+    function renderDayNames() {
+        document.getElementById("daysName").innerHTML = DAY_NAMES.map(day => `<div>${day}</div>`).join("");
+    }
+
+    function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const today = new Date();
+
+        document.getElementById("monthYear").textContent = `${MONTH_NAMES[month]} ${year}`;
+
+        let firstDay = new Date(year, month, 1).getDay();
+        firstDay = firstDay === 0 ? 6 : firstDay - 1;
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        const todayStatus = getShiftStatus(selectedShift, today.getFullYear(), today.getMonth(), today.getDate());
+        const currentTheme = THEMES[todayStatus] || THEMES.Off;
+
+        document.getElementById("appBody").className = `text-slate-800 theme-transition h-full flex flex-col select-none overflow-hidden ${currentTheme.bg}`;
+
+        const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeColorMeta) {
+            const colors = { "bg-[#0d9488]": "#0d9488", "bg-[#1e3a5f]": "#1e3a5f", "bg-[#e8635a]": "#e8635a" };
+            themeColorMeta.setAttribute('content', colors[currentTheme.bg] || "#0d9488");
+        }
+
+        // Today Card
+        const todayCard = document.getElementById("todayCard");
+        todayCard.className = `absolute left-5 right-5 -top-10 rounded-[24px] p-5 shadow-lg border-4 border-white flex items-center justify-between z-30 theme-transition h-[100px] overflow-hidden ${currentTheme.card}`;
+        todayCard.innerHTML = `
+            <div class="blob-soft absolute -top-8 -right-8 w-40 h-40 opacity-20"></div>
+            <div class="flex items-center gap-4 z-10 relative">
+                <div class="text-center border-r-2 border-slate-300/40 pr-4">
+                    <div class="text-[10px] uppercase font-semibold text-slate-400 tracking-widest">Hari Ini</div>
+                    <div class="text-[40px] font-bold leading-none mt-1 ${currentTheme.text}">${today.getDate()}</div>
+                </div>
                 <div>
-                    <span id="todayBadge" class="text-sm font-bold px-4 py-2 rounded-full inline-flex items-center gap-2 backdrop-blur-sm bg-white/30 border border-white/40 mb-3">
-                        <i class="fa-regular fa-sparkles text-xs"></i>
-                        <span id="todayLabel">PAGI</span>
-                    </span>
-                    <h2 id="todayTitle" class="text-2xl font-bold mb-1">Memuat...</h2>
-                    <p id="todayDesc" class="text-sm text-gray-500/90"></p>
-                </div>
-                <div class="w-16 h-16 rounded-[30px] bg-white/50 backdrop-blur-sm flex items-center justify-center text-2xl text-indigo-500 border border-white/60">
-                    <i class="fa-regular fa-calendar-check"></i>
+                    <div class="text-[17px] font-bold tracking-wide ${currentTheme.text}">SHIFT ${currentTheme.name.toUpperCase()}</div>
+                    <div class="text-[13px] font-medium text-slate-500 mt-0.5">${currentTheme.time}</div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="glass-morph rounded-[40px] p-6 flex-1 overflow-auto mb-6 border border-white/50 shadow-sm">
-        <div class="flex items-center justify-between mb-7">
-            <button onclick="moveMonth(-1)" class="w-12 h-12 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center text-gray-600 border border-white/70 active:scale-90 transition">
-                <i class="fa-solid fa-chevron-left text-sm"></i>
-            </button>
-            <div class="text-center">
-                <p class="text-sm font-medium text-indigo-300">BULAN</p>
-                <h3 id="monthDisplay" class="text-2xl font-bold">Maret</h3>
-                <p id="yearDisplay" class="text-xs text-gray-400 mt-0.5">2026</p>
+            <div class="absolute right-4 text-[55px] opacity-10 pointer-events-none ${currentTheme.text}">
+                <i class="fa-solid ${currentTheme.icon}"></i>
             </div>
-            <button onclick="moveMonth(1)" class="w-12 h-12 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center text-gray-600 border border-white/70 active:scale-90 transition">
-                <i class="fa-solid fa-chevron-right text-sm"></i>
-            </button>
-        </div>
+        `;
 
-        <div class="grid grid-cols-7 gap-2 mb-4 px-1">
-            <div class="text-center text-[0.65rem] font-semibold text-gray-300 tracking-wider">MIN</div>
-            <div class="text-center text-[0.65rem] font-semibold text-gray-300 tracking-wider">SEN</div>
-            <div class="text-center text-[0.65rem] font-semibold text-gray-300 tracking-wider">SEL</div>
-            <div class="text-center text-[0.65rem] font-semibold text-gray-300 tracking-wider">RAB</div>
-            <div class="text-center text-[0.65rem] font-semibold text-gray-300 tracking-wider">KAM</div>
-            <div class="text-center text-[0.65rem] font-semibold text-gray-300 tracking-wider">JUM</div>
-            <div class="text-center text-[0.65rem] font-semibold text-gray-300 tracking-wider">SAB</div>
-        </div>
-
-        <div id="calendarGrid" class="grid grid-cols-7 gap-2"></div>
-    </div>
-
-    <div class="glass-morph rounded-[40px] p-6 mb-24 border border-white/50 shadow-sm">
-        <div class="flex items-center gap-2 mb-4">
-            <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
-                <i class="fa-solid fa-star text-sm"></i>
-            </div>
-            <h3 class="font-bold text-lg">Hari Libur Nasional & SPL</h3>
-        </div>
-        <div id="splListContainer" class="space-y-2 max-h-48 overflow-y-auto pr-2"></div>
-    </div>
-
-    <nav class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-sm">
-        <div class="glass-morph rounded-[50px] py-2 px-4 flex items-center justify-around border border-white/50 shadow-lg backdrop-blur-2xl">
-            <a href="#" class="nav-item active flex items-center gap-2 text-sm font-bold">
-                <i class="fa-solid fa-calendar-days"></i> <span class="hidden sm:inline">Jadwal</span>
-            </a>
-
-            <a href="pulando.html" class="nav-item flex items-center gap-2 text-sm font-bold text-gray-500">
-                <i class="fa-solid fa-camera-retro"></i> <span class="hidden sm:inline">Pulando</span>
-            </a>
-        </div>
-    </nav>
-
-    <script>
-        const HOLIDAYS_2026 = ["2026-01-01","2026-01-16","2026-02-17","2026-03-19","2026-03-21","2026-03-22","2026-04-03","2026-04-05","2026-05-01","2026-05-14","2026-05-27","2026-05-31","2026-06-01","2026-06-16","2026-08-17","2026-08-25","2026-12-25"];
-        const HOLIDAY_NAMES = {"2026-01-01":"Tahun Baru Masehi","2026-01-16":"Isra Mikraj","2026-02-17":"Imlek","2026-03-19":"Nyepi","2026-03-21":"Idul Fitri","2026-03-22":"Idul Fitri","2026-04-03":"Wafat Yesus","2026-04-05":"Paskah","2026-05-01":"Hari Buruh","2026-05-14":"Kenaikan Yesus","2026-05-27":"Idul Adha","2026-05-31":"Waisak","2026-06-01":"Pancasila","2026-06-16":"Tahun Baru Islam","2026-08-17":"Kemerdekaan","2026-08-25":"Maulid Nabi","2026-12-25":"Natal"};
-        const SHIFT_HOURS = {"Pagi":"07:30-19:30","Malam":"19:30-07:30","Libur":"Off"};
-        const MONTH_NAMES = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-        
-        // ===== PERBAIKAN: TANGGAL DINAMIS MENGIKUTI HARI INI =====
-let currentDate = new Date(); // Ambil tanggal hari ini
-let currentView = new Date(); // Tampilan kalender ikut bulan sekarang
-
-// Setel ke jam 00:00:00 untuk menghindari masalah timezone
-currentDate.setHours(0, 0, 0, 0);
-currentView.setHours(0, 0, 0, 0);
-        
-        function getShiftForDate(date, team) {
-            const teamIndex = {A:0,B:1,C:2}[team];
-            const baseDate = new Date(2026,2,1);
-            const diffDays = Math.round((date - baseDate)/(1000*60*60*24));
-            const baseOffsets = {A:2,B:0,C:1};
-            const shiftIndex = (baseOffsets[team] + diffDays) % 3;
-            return ["Pagi","Malam","Libur"][shiftIndex];
+        // Calendar Dates
+        let html = "";
+        for (let i = 0; i < firstDay; i++) {
+            html += `<div></div>`;
         }
-        
-        function getNationalHoliday(date) {
-            const y=date.getFullYear(), m=String(date.getMonth()+1).padStart(2,'0'), d=String(date.getDate()).padStart(2,'0');
-            const dateStr = `${y}-${m}-${d}`;
-            return HOLIDAYS_2026.includes(dateStr) ? HOLIDAY_NAMES[dateStr] : null;
-        }
-        
-        function getSplStatus(date, team) {
-            const holidayName = getNationalHoliday(date);
-            if (!holidayName) return null;
-            const shiftType = getShiftForDate(date, team);
-            return shiftType !== "Libur" 
-                ? {status:"spl", label:"DAPAT SPL", badgeClass:"badge-spl", icon:"fa-solid fa-star"}
-                : {status:"no_spl", label:"TIDAK DAPAT SPL", badgeClass:"badge-no-spl", icon:"fa-solid fa-circle-xmark"};
-        }
-        
-        function saveTeam() { localStorage.setItem('shiftee_team', document.getElementById('teamSelect').value); renderUI(); }
-        function loadTeam() { return localStorage.getItem('shiftee_team') || "C"; }
-        
-        function renderUI() {
-            const team = loadTeam();
-            const year = currentView.getFullYear();
-            const month = currentView.getMonth();
-            
-            document.getElementById('headerDate').innerText = currentDate.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
-            document.getElementById('monthDisplay').innerText = MONTH_NAMES[month];
-            document.getElementById('yearDisplay').innerText = year;
-            
-            const todayShift = getShiftForDate(currentDate, team);
-            const todayHoliday = getNationalHoliday(currentDate);
-            const todaySpl = getSplStatus(currentDate, team);
-            
-            let badgeClass = todayShift==="Pagi"?"badge-morning":todayShift==="Malam"?"badge-night":"badge-off";
-            document.getElementById('todayBadge').className = `text-sm font-bold px-4 py-2 rounded-full inline-flex items-center gap-2 backdrop-blur-sm bg-white/30 border border-white/40 mb-3 ${badgeClass}`;
-            let todayIcon = todayShift==="Pagi"?"fa-regular fa-sun":todayShift==="Malam"?"fa-regular fa-moon":"fa-regular fa-face-smile";
-            document.getElementById('todayBadge').innerHTML = `<i class="${todayIcon} text-xs"></i> <span id="todayLabel">${todayShift.toUpperCase()}</span>`;
-            document.getElementById('todayTitle').innerText = todayShift==="Pagi"?"Shift Pagi":todayShift==="Malam"?"Shift Malam":"Hari Libur Shift";
-            
-            let todayDesc = SHIFT_HOURS[todayShift];
-            if (todayHoliday) todayDesc += ` · ${todayHoliday}`;
-            if (todaySpl) todayDesc += todaySpl.status==="spl" ? ` · ✨ Dapat SPL` : ` · ⭕ Tidak dapat SPL`;
-            document.getElementById('todayDesc').innerText = todayDesc;
-            
-            renderCalendar(team);
-            renderSplList(team);
-        }
-        
-        function renderCalendar(team) {
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
-            const year = currentView.getFullYear();
-            const month = currentView.getMonth();
-            const firstDay = new Date(year, month, 1).getDay();
-            const lastDate = new Date(year, month + 1, 0).getDate();
-            
-            for (let i=0; i<firstDay; i++) { const empty=document.createElement('div'); empty.className='opacity-0'; grid.appendChild(empty); }
-            
-            for (let d=1; d<=lastDate; d++) {
-                const dateObj = new Date(year, month, d);
-                const shiftType = getShiftForDate(dateObj, team);
-                const holidayName = getNationalHoliday(dateObj);
-                const isToday = dateObj.toDateString() === currentDate.toDateString();
-                
-                let shiftClass = shiftType==="Pagi"?"shift-morning":shiftType==="Malam"?"shift-night":"shift-off";
-                const tile = document.createElement('div');
-                tile.className = `day-tile ${shiftClass} ${isToday?'today':''} ${holidayName?'spl-date':''}`;
-                
-                const dateSpan = document.createElement('span'); 
-                dateSpan.className = 'text-base font-bold'; 
-                dateSpan.innerText = d; 
-                tile.appendChild(dateSpan);
-                
-                if (!isToday) {
-                    const badgeSpan = document.createElement('span');
-                    badgeSpan.className = `text-[0.55rem] font-bold px-1.5 py-0.5 rounded-full mt-0.5`;
-                    if (shiftType==="Pagi") badgeSpan.classList.add('badge-morning');
-                    else if (shiftType==="Malam") badgeSpan.classList.add('badge-night');
-                    else badgeSpan.classList.add('badge-off');
-                    badgeSpan.innerText = shiftType==="Pagi"?"P":shiftType==="Malam"?"M":"OFF";
-                    tile.appendChild(badgeSpan);
-                } else {
-                    // Untuk today, badge tidak perlu karena sudah ada warna khusus
-                }
-                
-                if (holidayName) {
-                    const splDot = document.createElement('div');
-                    splDot.className = 'spl-indicator';
-                    splDot.innerHTML = '<i class="fa-solid fa-star text-[8px]"></i>';
-                    tile.appendChild(splDot);
-                }
-                
-                grid.appendChild(tile);
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const status = getShiftStatus(selectedShift, year, month, d);
+            const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+            const isHoliday = !!NATIONAL_HOLIDAYS[dateKey];
+            const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+
+            const statusTheme = THEMES[status] || THEMES.Off;
+            const statusName = status === "Off" ? "OFF" : status;
+
+            let textColor = "text-slate-700";
+            let bgCell = "bg-white";
+            let capsuleClass = statusTheme.capsule;
+
+            if (isHoliday) {
+                bgCell = "bg-rose-50";
+                textColor = "text-rose-600";
             }
-        }
-        
-        function renderSplList(team) {
-            const container = document.getElementById('splListContainer');
-            container.innerHTML = '';
-            const year = currentView.getFullYear();
-            const month = currentView.getMonth();
-            
-            const holidaysThisMonth = HOLIDAYS_2026.filter(dateStr => dateStr.startsWith(`${year}-${String(month+1).padStart(2,'0')}`));
-            if (holidaysThisMonth.length===0) {
-                container.innerHTML = '<div class="text-center text-gray-400 py-6">Tidak ada libur nasional bulan ini</div>';
-                return;
-            }
-            
-            holidaysThisMonth.sort().forEach(dateStr => {
-                const [y,m,d] = dateStr.split('-').map(Number);
-                const dateObj = new Date(y,m-1,d);
-                const shiftType = getShiftForDate(dateObj, team);
-                const holidayName = HOLIDAY_NAMES[dateStr];
-                const splStatus = getSplStatus(dateObj, team);
-                
-                const item = document.createElement('div');
-                item.className = 'spl-list-item flex items-center justify-between';
-                
-                const leftDiv = document.createElement('div');
-                leftDiv.className = 'flex items-center gap-3';
-                const dateDiv = document.createElement('div');
-                dateDiv.className = 'font-bold text-lg w-8 text-center';
-                dateDiv.innerText = d;
-                const nameDiv = document.createElement('div');
-                nameDiv.className = 'font-medium text-sm';
-                nameDiv.innerText = holidayName;
-                leftDiv.appendChild(dateDiv); leftDiv.appendChild(nameDiv);
-                
-                const rightDiv = document.createElement('div');
-                rightDiv.className = 'text-right';
-                const shiftBadge = document.createElement('span');
-                shiftBadge.className = `text-xs font-bold px-2 py-1 rounded-full inline-block mr-2`;
-                if (shiftType==="Pagi") shiftBadge.classList.add('badge-morning');
-                else if (shiftType==="Malam") shiftBadge.classList.add('badge-night');
-                else shiftBadge.classList.add('badge-off');
-                shiftBadge.innerText = shiftType;
-                
-                const statusDiv = document.createElement('span');
-                statusDiv.className = `text-xs font-semibold px-2 py-1 rounded-full inline-block ${splStatus.badgeClass}`;
-                statusDiv.innerHTML = `<i class="${splStatus.icon} mr-1 text-[8px]"></i> ${splStatus.label}`;
-                
-                rightDiv.appendChild(shiftBadge); rightDiv.appendChild(statusDiv);
-                item.appendChild(leftDiv); item.appendChild(rightDiv);
-                container.appendChild(item);
-            });
-        }
-        
-        function moveMonth(dir) { currentView.setMonth(currentView.getMonth() + dir); renderUI(); }
-        
-        // ========== SERVICE WORKER REGISTRATION ==========
-        async function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                try {
-                    const registration = await navigator.serviceWorker.register('./service-worker.js', {
-                        scope: './'
-                    });
-                    
-                    console.log('✅ Service Worker registered!');
-                    
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        console.log('🔄 New service worker found!');
-                        
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'activated') {
-                                if (confirm('Aplikasi Shiftku telah diperbarui! Reload sekarang?')) {
-                                    window.location.reload();
-                                }
-                            }
-                        });
-                    });
-                    
-                } catch (error) {
-                    console.error('❌ Service Worker registration failed:', error);
-                }
-            }
-        }
 
-        function checkOnlineStatus() {
-            if (!navigator.onLine) {
-                showOfflineNotification();
+            if (isToday) {
+                bgCell = currentTheme.bg;
+                textColor = "text-white";
+                capsuleClass = "bg-white/25 text-white";
             }
-            
-            window.addEventListener('online', () => {
-                hideOfflineNotification();
-            });
-            
-            window.addEventListener('offline', () => {
-                showOfflineNotification();
-            });
-        }
 
-        function showOfflineNotification() {
-            if (document.getElementById('offline-notification')) return;
-            
-            const notification = document.createElement('div');
-            notification.id = 'offline-notification';
-            notification.innerHTML = '📴 Anda sedang offline - Menggunakan data tersimpan';
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                hideOfflineNotification();
-            }, 3000);
-        }
-
-        function hideOfflineNotification() {
-            const notification = document.getElementById('offline-notification');
-            if (notification) notification.remove();
-        }
-
-        // ========== POPUP INSTALL ANDROID ==========
-        function showInstallPopup() {
-            if (localStorage.getItem('shiftku_install_popup_shown') === 'true') {
-                return;
-            }
-            
-            if (window.matchMedia('(display-mode: standalone)').matches || 
-                window.navigator.standalone === true) {
-                return;
-            }
-            
-            const isAndroid = /Android/i.test(navigator.userAgent);
-            
-            const overlay = document.createElement('div');
-            overlay.className = 'popup-overlay';
-            overlay.id = 'popup-overlay';
-            document.body.appendChild(overlay);
-            
-            const popup = document.createElement('div');
-            popup.id = 'install-popup';
-            
-            if (isAndroid) {
-                popup.innerHTML = `
-                    <div class="popup-close" onclick="closeInstallPopup()">
-                        <i class="fa-solid fa-times"></i>
+            html += `
+                <div class="border-0 ${bgCell} rounded-[14px] calendar-cell flex flex-col justify-between p-1.5 shadow-sm relative transition-all cursor-pointer">
+                    <div class="text-[15px] font-bold ${textColor} leading-none text-center mt-0.5">
+                        ${d}
                     </div>
-                    <div class="popup-header">
-                        <div class="popup-icon">
-                            <i class="fa-brands fa-android"></i>
-                        </div>
-                        <div>
-                            <div class="popup-title">Install Shiftku</div>
-                            <div class="popup-subtitle">Aplikasi Android</div>
-                        </div>
+                    <div class="flex items-center justify-center w-full mt-auto mb-1">
+                        <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${capsuleClass}">
+                            ${statusName}
+                        </span>
                     </div>
-                    <div class="popup-features">
-                        <div class="popup-feature-item">
-                            <i class="fa-regular fa-rocket"></i>
-                            <span>Akses lebih cepat dari home screen</span>
+                </div>
+            `;
+        }
+
+        document.getElementById("calendarDates").innerHTML = html;
+
+        // SPL List
+        const currentMonthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
+        let holidayHtml = "";
+        let foundHoliday = false;
+
+        Object.entries(NATIONAL_HOLIDAYS).forEach(([date, name]) => {
+            if (date.startsWith(currentMonthKey)) {
+                foundHoliday = true;
+                const dayOnly = parseInt(date.split("-")[2]);
+                const shiftOnHoliday = getShiftStatus(selectedShift, year, month, dayOnly);
+                const isDapatSPL = (shiftOnHoliday === "P" || shiftOnHoliday === "M");
+                const shiftBadgeClass = shiftOnHoliday === "P" ? "badge-pagi" : shiftOnHoliday === "M" ? "badge-malam" : "badge-off";
+
+                const splBadge = isDapatSPL
+                    ? `<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full badge-dapat-spl"><i class="fa-solid fa-check mr-1 text-[7px]"></i>DAPAT SPL</span>`
+                    : `<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full badge-tidak-spl"><i class="fa-solid fa-circle-xmark mr-1 text-[7px]"></i>TIDAK SPL</span>`;
+
+                holidayHtml += `
+                    <div class="spl-list-item flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-rose-100 text-rose-600 rounded-lg w-8 h-8 flex items-center justify-center text-[14px] font-bold shadow-sm">
+                                ${dayOnly}
+                            </div>
+                            <div class="text-[13px] font-semibold text-slate-700">
+                                ${name}
+                            </div>
                         </div>
-                        <div class="popup-feature-item">
-                            <i class="fa-regular fa-wifi-slash"></i>
-                            <span>Bisa digunakan offline</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${shiftBadgeClass}">${shiftOnHoliday === "Off" ? "OFF" : shiftOnHoliday}</span>
+                            ${splBadge}
                         </div>
-                        <div class="popup-feature-item">
-                            <i class="fa-regular fa-bell"></i>
-                            <span>Notifikasi jadwal shift</span>
-                        </div>
-                        <div class="popup-feature-item">
-                            <i class="fa-regular fa-star"></i>
-                            <span>Tanpa iklan, lebih ringan</span>
-                        </div>
-                    </div>
-                    <div class="popup-buttons">
-                        <button class="popup-btn popup-btn-secondary" onclick="closeInstallPopup()">
-                            Nanti
-                        </button>
-                        <button class="popup-btn popup-btn-primary" onclick="showAndroidInstallGuide()">
-                            Install
-                        </button>
                     </div>
                 `;
-            } else {
-                popup.innerHTML = `
-                    <div class="popup-close" onclick="closeInstallPopup()">
-                        <i class="fa-solid fa-times"></i>
-                    </div>
-                    <div class="popup-header">
-                        <div class="popup-icon">
-                            <i class="fa-solid fa-mobile-screen"></i>
-                        </div>
-                        <div>
-                            <div class="popup-title">Install Shiftku</div>
-                            <div class="popup-subtitle">Tambahkan ke Home Screen</div>
-                        </div>
-                    </div>
-                    <div class="popup-features">
-                        <div class="popup-feature-item">
-                            <i class="fa-regular fa-rocket"></i>
-                            <span>Akses lebih cepat</span>
-                        </div>
-                        <div class="popup-feature-item">
-                            <i class="fa-regular fa-wifi-slash"></i>
-                            <span>Mode offline</span>
-                        </div>
-                    </div>
-                    <div class="popup-buttons">
-                        <button class="popup-btn popup-btn-secondary" onclick="closeInstallPopup()">
-                            Nanti
-                        </button>
-                        <button class="popup-btn popup-btn-primary" onclick="showInstallGuide()">
-                            Lihat Cara
-                        </button>
-                    </div>
-                `;
-            }
-            
-            document.body.appendChild(popup);
-            localStorage.setItem('shiftku_install_popup_shown', 'true');
-        }
-
-        function closeInstallPopup() {
-            const popup = document.getElementById('install-popup');
-            const overlay = document.getElementById('popup-overlay');
-            
-            if (popup) {
-                popup.style.animation = 'slideDown 0.3s ease';
-                setTimeout(() => {
-                    popup.remove();
-                }, 200);
-            }
-            
-            if (overlay) {
-                overlay.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => {
-                    overlay.remove();
-                }, 200);
-            }
-        }
-
-        function showAndroidInstallGuide() {
-            closeInstallPopup();
-            setTimeout(() => {
-                alert('📱 Cara Install Shiftku di Android:\n\n' +
-                      '1. Tap menu (3 titik) di Chrome\n' +
-                      '2. Pilih "Install app" atau "Tambahkan ke layar utama"\n' +
-                      '3. Konfirmasi dengan tap "Install"');
-            }, 300);
-        }
-
-        function showInstallGuide() {
-            closeInstallPopup();
-            setTimeout(() => {
-                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    alert('📱 Cara Install Shiftku di iPhone/iPad:\n\n' +
-                          '1. Tap icon Share (kotak dengan panah)\n' +
-                          '2. Scroll ke bawah\n' +
-                          '3. Pilih "Add to Home Screen"\n' +
-                          '4. Tap "Add" di pojok kanan atas');
-                } else {
-                    alert('📱 Cara Install Shiftku:\n\n' +
-                          'Chrome/Android:\n' +
-                          '• Tap menu (3 titik) → "Install app"\n\n' +
-                          'Desktop:\n' +
-                          '• Klik icon install di address bar');
-                }
-            }, 300);
-        }
-
-        function checkIfInstalled() {
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                console.log('✅ Aplikasi berjalan dalam mode standalone');
-                return true;
-            }
-            if (window.navigator.standalone === true) {
-                console.log('✅ Aplikasi berjalan dalam mode standalone (iOS)');
-                return true;
-            }
-            return false;
-        }
-
-        // Inisialisasi
-        document.getElementById('teamSelect').value = loadTeam();
-        renderUI();
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            registerServiceWorker();
-            checkOnlineStatus();
-            
-            if (!checkIfInstalled()) {
-                setTimeout(() => {
-                    showInstallPopup();
-                }, 2000);
             }
         });
-    </script>
+
+        if (!foundHoliday) {
+            holidayHtml = `
+                <div class="text-slate-400 text-[13px] font-medium italic py-3 text-center bg-white/60 rounded-xl border border-dashed border-slate-200">
+                    Bulan ini tidak ada Libur Nasional
+                </div>
+            `;
+        }
+
+        document.getElementById("holidayList").innerHTML = holidayHtml;
+    }
+
+    document.getElementById("prevBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+    document.getElementById("nextBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+    document.getElementById("shiftSelect").addEventListener("change", (e) => { selectedShift = e.target.value; localStorage.setItem("selectedShift", selectedShift); renderCalendar(); });
+
+    // PWA
+    async function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            try {
+                const registration = await navigator.serviceWorker.register('./service-worker.js', { scope: './' });
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'activated' && confirm('Update tersedia! Reload sekarang?')) window.location.reload();
+                    });
+                });
+            } catch (error) {}
+        }
+    }
+
+    function checkOnlineStatus() {
+        if (!navigator.onLine) showOfflineNotification();
+        window.addEventListener('online', hideOfflineNotification);
+        window.addEventListener('offline', showOfflineNotification);
+    }
+
+    function showOfflineNotification() {
+        if (document.getElementById('offline-notification')) return;
+        const n = document.createElement('div');
+        n.id = 'offline-notification';
+        n.textContent = '📴 Anda sedang offline - Data tersimpan';
+        document.body.appendChild(n);
+        setTimeout(hideOfflineNotification, 3000);
+    }
+
+    function hideOfflineNotification() {
+        const n = document.getElementById('offline-notification');
+        if (n) n.remove();
+    }
+
+    function showInstallPopup() {
+        if (localStorage.getItem('shiftku_install_popup_shown') === 'true') return;
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) return;
+
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const overlay = document.createElement('div');
+        overlay.className = 'popup-overlay';
+        document.body.appendChild(overlay);
+
+        const popup = document.createElement('div');
+        popup.id = 'install-popup';
+        popup.innerHTML = isAndroid ? `
+            <div class="popup-close" onclick="closeInstallPopup()"><i class="fa-solid fa-times"></i></div>
+            <div class="popup-header"><div class="popup-icon"><i class="fa-brands fa-android"></i></div><div><div class="popup-title">Install ShiftKu</div><div class="popup-subtitle">Akses lebih cepat & offline</div></div></div>
+            <div class="popup-features"><div class="popup-feature-item"><i class="fa-solid fa-bolt"></i><span>Akses cepat dari home screen</span></div><div class="popup-feature-item"><i class="fa-solid fa-wifi-slash"></i><span>Bisa digunakan offline</span></div></div>
+            <div class="popup-buttons"><button class="popup-btn popup-btn-secondary" onclick="closeInstallPopup()">Nanti</button><button class="popup-btn popup-btn-primary" onclick="showAndroidInstallGuide()">Install</button></div>` : `
+            <div class="popup-close" onclick="closeInstallPopup()"><i class="fa-solid fa-times"></i></div>
+            <div class="popup-header"><div class="popup-icon"><i class="fa-solid fa-mobile-screen"></i></div><div><div class="popup-title">Install ShiftKu</div><div class="popup-subtitle">Tambahkan ke Home Screen</div></div></div>
+            <div class="popup-features"><div class="popup-feature-item"><i class="fa-solid fa-bolt"></i><span>Akses lebih cepat</span></div><div class="popup-feature-item"><i class="fa-solid fa-wifi-slash"></i><span>Mode offline</span></div></div>
+            <div class="popup-buttons"><button class="popup-btn popup-btn-secondary" onclick="closeInstallPopup()">Nanti</button><button class="popup-btn popup-btn-primary" onclick="showInstallGuide()">Lihat Cara</button></div>`;
+        document.body.appendChild(popup);
+        localStorage.setItem('shiftku_install_popup_shown', 'true');
+    }
+
+    function closeInstallPopup() {
+        const popup = document.getElementById('install-popup');
+        const overlay = document.querySelector('.popup-overlay');
+        if (popup) { popup.style.animation = 'slideDown 0.3s ease forwards'; setTimeout(() => popup.remove(), 300); }
+        if (overlay) { overlay.style.animation = 'fadeOut 0.3s ease forwards'; setTimeout(() => overlay.remove(), 300); }
+    }
+
+    function showAndroidInstallGuide() { closeInstallPopup(); setTimeout(() => alert('📱 Cara Install:\n\n1. Tap menu (⋮) di Chrome\n2. Pilih "Install app"\n3. Konfirmasi dengan tap "Install"'), 300); }
+    function showInstallGuide() { closeInstallPopup(); setTimeout(() => alert(/iPhone|iPad|iPod/i.test(navigator.userAgent) ? '📱 Cara Install di iPhone/iPad:\n\n1. Tap Share (📤)\n2. Scroll ke bawah\n3. Pilih "Add to Home Screen"\n4. Tap "Add"' : '📱 Cara Install:\n\nChrome/Android: Tap menu (⋮) → "Install app"\n\nDesktop: Klik icon install di address bar'), 300); }
+
+    document.getElementById("shiftSelect").value = selectedShift;
+    renderDayNames();
+    renderCalendar();
+
+    document.addEventListener('DOMContentLoaded', () => {
+        registerServiceWorker();
+        checkOnlineStatus();
+        if (!window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone) {
+            setTimeout(showInstallPopup, 2000);
+        }
+    });
+</script>
 </body>
 </html>
