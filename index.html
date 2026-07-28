@@ -17,9 +17,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         html, body {
-            height: 100%;
+            min-height: 100vh;
             font-family: 'Space Grotesk', system-ui, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
@@ -34,7 +35,7 @@
         }
 
         .theme-transition {
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
 
         button {
@@ -42,24 +43,16 @@
         }
 
         button:active {
-            transform: scale(0.97);
+            transform: scale(0.95);
         }
 
         /* ===== LIQUID GLASS ===== */
-        .liquid-glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 12px 40px -12px rgba(0, 30, 60, 0.15);
-        }
-
         .liquid-glass-light {
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(15px) saturate(150%);
             -webkit-backdrop-filter: blur(15px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 30px -8px rgba(0, 20, 40, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 8px 30px -8px rgba(0, 20, 40, 0.08);
         }
 
         .blob-soft {
@@ -76,12 +69,11 @@
 
         .calendar-cell {
             aspect-ratio: 1;
-            transition: all 0.18s ease;
+            transition: all 0.15s ease;
         }
 
         .calendar-cell:active {
-            transform: scale(0.94);
-            background: #f5f7ff;
+            transform: scale(0.92);
         }
 
         /* Badge Styles */
@@ -92,52 +84,36 @@
         .badge-tidak-spl { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
 
         .spl-list-item {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 16px;
-            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 14px;
+            padding: 0.6rem 0.8rem;
             border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            transition: all 0.2s;
-        }
-
-        .spl-list-item:active {
-            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
 
         .select-soft {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 40px;
-            padding: 0.4rem 2.2rem 0.4rem 1.2rem;
+            padding: 0.35rem 2rem 0.35rem 1rem;
             font-weight: 600;
             font-size: 0.75rem;
             color: white;
             outline: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 0.8rem center;
+            background-position: right 0.7rem center;
             background-size: 0.8rem;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .select-soft:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .scroll-hidden::-webkit-scrollbar {
-            display: none;
-        }
-        .scroll-hidden {
-            scrollbar-width: none;
-        }
+        .scroll-hidden::-webkit-scrollbar { display: none; }
+        .scroll-hidden { scrollbar-width: none; }
 
         /* ===== POPUP INSTALL ===== */
         #install-popup {
@@ -168,241 +144,67 @@
             to { bottom: -100px; opacity: 0; transform: translateX(-50%) scale(0.9); }
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
-        .popup-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 16px;
-        }
-
+        .popup-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
         .popup-icon {
-            width: 56px;
-            height: 56px;
+            width: 56px; height: 56px;
             background: linear-gradient(145deg, #0d9488, #0f766e);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 28px;
-            box-shadow: 0 8px 20px -5px rgba(13, 148, 136, 0.4);
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 28px; box-shadow: 0 8px 20px -5px rgba(13, 148, 136, 0.4);
         }
-
-        .popup-title {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: #0d9488;
-            line-height: 1.2;
-        }
-
-        .popup-subtitle {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-top: 3px;
-            font-weight: 500;
-        }
-
-        .popup-features {
-            background: #f0fdfa;
-            border-radius: 18px;
-            padding: 14px;
-            margin-bottom: 18px;
-        }
-
-        .popup-feature-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 4px 0;
-            font-size: 0.85rem;
-            color: #1e293b;
-        }
-
-        .popup-feature-item i {
-            color: #0d9488;
-            width: 20px;
-            font-size: 0.9rem;
-        }
-
-        .popup-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
+        .popup-title { font-weight: 700; font-size: 1.2rem; color: #0d9488; line-height: 1.2; }
+        .popup-subtitle { font-size: 0.8rem; color: #64748b; margin-top: 3px; font-weight: 500; }
+        .popup-features { background: #f0fdfa; border-radius: 18px; padding: 14px; margin-bottom: 18px; }
+        .popup-feature-item { display: flex; align-items: center; gap: 10px; padding: 4px 0; font-size: 0.85rem; color: #1e293b; }
+        .popup-feature-item i { color: #0d9488; width: 20px; font-size: 0.9rem; }
+        .popup-buttons { display: flex; gap: 10px; }
         .popup-btn {
-            flex: 1;
-            padding: 12px 0;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Space Grotesk', sans-serif;
+            flex: 1; padding: 12px 0; border-radius: 25px; font-weight: 600; font-size: 0.9rem;
+            border: none; cursor: pointer; transition: all 0.2s; font-family: 'Space Grotesk', sans-serif;
         }
-
-        .popup-btn-primary {
-            background: #0d9488;
-            color: white;
-            box-shadow: 0 8px 20px -5px rgba(13, 148, 136, 0.4);
-        }
-
-        .popup-btn-primary:active {
-            transform: scale(0.95);
-        }
-
-        .popup-btn-secondary {
-            background: #e2e8f0;
-            color: #475569;
-        }
-
-        .popup-btn-secondary:active {
-            transform: scale(0.95);
-        }
-
+        .popup-btn-primary { background: #0d9488; color: white; box-shadow: 0 8px 20px -5px rgba(13, 148, 136, 0.4); }
+        .popup-btn-secondary { background: #e2e8f0; color: #475569; }
         .popup-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 0.7rem;
-            color: #64748b;
-            transition: all 0.2s;
+            position: absolute; top: 10px; right: 10px; width: 26px; height: 26px; border-radius: 50%;
+            background: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 0.7rem; color: #64748b;
         }
-
-        .popup-close:active {
-            background: rgba(0,0,0,0.1);
-        }
-
         .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(2px);
-            z-index: 9999;
-            animation: fadeIn 0.3s ease;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); z-index: 9999; animation: fadeIn 0.3s ease;
         }
 
         #offline-notification {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            z-index: 9998;
-            animation: fadeIn 0.3s ease;
-            white-space: nowrap;
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            background: #1e293b; color: white; padding: 10px 20px; border-radius: 50px;
+            font-weight: 600; font-size: 0.8rem; box-shadow: 0 8px 20px rgba(0,0,0,0.25); z-index: 9998;
         }
 
-        /* ===== MEDIA QUERIES ===== */
+        /* ===== MEDIA QUERIES PENYESUAIAN HP KECIL ===== */
         @media (max-width: 380px) {
-            .calendar-cell {
-                border-radius: 12px !important;
-            }
-            
-            .calendar-cell .text-\[15px\] {
-                font-size: 13px !important;
-            }
-            
-            .calendar-cell .text-\[11px\] {
-                font-size: 9px !important;
-                padding-left: 6px !important;
-                padding-right: 6px !important;
-            }
-
-            #todayCard {
-                padding: 0.9rem !important;
-                height: 85px !important;
-            }
-
-            #todayCard .text-\[40px\] {
-                font-size: 32px !important;
-            }
-
-            #todayCard .text-\[17px\] {
-                font-size: 14px !important;
-            }
-
-            #todayCard .text-\[13px\] {
-                font-size: 11px !important;
-            }
-
-            .spl-list-item {
-                padding: 0.6rem 0.8rem !important;
-            }
-        }
-
-        @media (max-width: 340px) {
-            .calendar-cell {
-                border-radius: 10px !important;
-            }
-            
-            .calendar-cell .text-\[15px\] {
-                font-size: 11px !important;
-            }
-            
-            .calendar-cell .text-\[11px\] {
-                font-size: 7px !important;
-                padding-left: 4px !important;
-                padding-right: 4px !important;
-            }
-        }
-        #perawatan{
-            display: none;
-            position: absolute;
-            background-color: #000000;
-            width: 100%;
-            height: 100%;
-            z-index:9999;
-            h1{
-            text-align: center;
-            color:red;
-            margin-top: 4rem;
-            font-size: 4rem;
-        }
-        p{
-            text-align: center;
-            color: white;
-        }
+            .calendar-cell { border-radius: 10px !important; }
+            .calendar-cell .text-\[13px\] { font-size: 11px !important; }
+            .calendar-cell .text-\[9px\] { font-size: 8px !important; padding-left: 4px !important; padding-right: 4px !important; }
+            #todayCard { padding: 0.6rem 0.8rem !important; }
+            #todayCard .text-\[32px\] { font-size: 26px !important; }
+            #todayCard .text-\[15px\] { font-size: 13px !important; }
         }
     </style>
 </head>
 
-<body id="appBody" class="text-slate-800 theme-transition bg-[#0d9488] h-full flex flex-col select-none overflow-hidden">
-    <div id="perawatan">
-        <h1>Pekerjaan berjalan dengan baik, tidak ada mobil menekan
-        🤣</h1>
-        <p>Dalam perawatan, tunggu aja. yang bikin lagi males</p>
-    </div>
+<body id="appBody" class="text-slate-800 theme-transition bg-[#0d9488] min-h-screen flex flex-col select-none">
 
-<div class="h-full flex flex-col pt-6 max-w-2xl mx-auto w-full relative">
+<div class="min-h-screen flex flex-col pt-4 max-w-2xl mx-auto w-full relative">
 
-    <div class="px-6 flex items-center justify-between text-white relative z-10">
-        <button id="prevBtn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 active:scale-95 transition backdrop-blur-sm hover:bg-white/20">
-            <i class="fa-solid fa-chevron-left text-[16px]"></i>
+    <!-- Header Navigation -->
+    <div class="px-5 flex items-center justify-between text-white relative z-10 mb-3">
+        <button id="prevBtn" aria-label="Bulan Sebelumnya" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 active:scale-95 transition backdrop-blur-sm hover:bg-white/20">
+            <i class="fa-solid fa-chevron-left text-[15px]"></i>
         </button>
 
         <div class="flex flex-col items-center">
-            <div id="monthYear" class="text-[22px] uppercase font-bold tracking-widest leading-none mb-1"></div>
+            <div id="monthYear" class="text-[18px] sm:text-[20px] uppercase font-bold tracking-widest leading-none mb-1.5"></div>
             <select id="shiftSelect" class="select-soft">
                 <option value="A" class="text-slate-800">SHIFT A</option>
                 <option value="B" class="text-slate-800">SHIFT B</option>
@@ -410,35 +212,40 @@
             </select>
         </div>
 
-        <button id="nextBtn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 active:scale-95 transition backdrop-blur-sm hover:bg-white/20">
-            <i class="fa-solid fa-chevron-right text-[16px]"></i>
+        <button id="nextBtn" aria-label="Bulan Berikutnya" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 active:scale-95 transition backdrop-blur-sm hover:bg-white/20">
+            <i class="fa-solid fa-chevron-right text-[15px]"></i>
         </button>
     </div>
 
-    <div class="bg-slate-50 rounded-t-[38px] flex-1 flex flex-col relative mt-16 shadow-[0_-10px_30px_rgba(0,0,0,0.15)]">
+    <!-- Main Content Container -->
+    <div class="bg-slate-50 rounded-t-[32px] flex-1 flex flex-col relative mt-8 shadow-[0_-10px_30px_rgba(0,0,0,0.15)] pb-6">
 
-        <div id="todayCard" class="absolute left-5 right-5 -top-10 rounded-[24px] p-5 shadow-lg border-4 border-white flex items-center justify-between z-30 theme-transition h-[100px] overflow-hidden">
-            <div class="blob-soft absolute -top-8 -right-8 w-40 h-40 opacity-20"></div>
+        <!-- Today Info Card -->
+        <div id="todayCard" class="absolute left-4 right-4 -top-7 rounded-[20px] px-4 py-3 shadow-md border-4 border-white flex items-center justify-between z-20 theme-transition min-h-[80px] overflow-hidden">
+            <div class="blob-soft absolute -top-8 -right-8 w-36 h-36 opacity-20"></div>
         </div>
 
-        <div class="pt-20 px-5 flex-1 flex flex-col min-h-0 pb-4">
-
-            <div id="calendarTab" class="tab-content flex-1 flex flex-col min-h-0">
-                <div id="daysName" class="grid grid-cols-7 gap-1 text-center mb-2 text-slate-400 font-semibold text-[12px] tracking-wider">
+        <!-- Inner Content Area -->
+        <div class="pt-14 px-4 flex flex-col">
+            <div id="calendarTab" class="flex flex-col">
+                
+                <!-- Days Header -->
+                <div id="daysName" class="grid grid-cols-7 gap-1 text-center my-1.5 text-slate-400 font-semibold text-[11px] tracking-wider">
                 </div>
 
-                <div class="flex-1 overflow-y-auto scroll-hidden">
-                    <div id="calendarDates" class="grid grid-cols-7 gap-1.5 fade-in text-slate-700 pb-2">
+                <!-- Calendar Grid -->
+                <div id="calendarDates" class="grid grid-cols-7 gap-1.5 fade-in text-slate-700 pb-2">
+                </div>
+
+                <!-- Holiday & SPL Section -->
+                <div class="mt-3 liquid-glass-light rounded-[18px] p-3 flex flex-col">
+                    <div class="text-slate-400 text-[10px] font-semibold uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                        <i class="fa-solid fa-umbrella-beach text-[#0d9488]"></i> Libur Nasional & SPL
+                    </div>
+                    <div id="holidayList" class="flex flex-col gap-1.5 overflow-y-auto scroll-hidden pr-0.5">
                     </div>
                 </div>
 
-                <div class="mt-3 liquid-glass-light rounded-[20px] p-3.5 flex flex-col">
-                    <div class="text-slate-400 text-[11px] font-semibold uppercase tracking-widest mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-umbrella-beach"></i> Libur Nasional & SPL
-                    </div>
-                    <div id="holidayList" class="flex flex-col gap-2 max-h-44 overflow-y-auto scroll-hidden">
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -487,7 +294,7 @@
     const NATIONAL_HOLIDAYS = {
         "2026-01-01": "Tahun Baru", "2026-02-16": "Isra Mikraj", "2026-03-19": "Nyepi",
         "2026-03-31": "Idul Fitri", "2026-04-01": "Idul Fitri", "2026-05-01": "Hari Buruh",
-        "2026-05-14": "Kenaikan Isa Almasih", "2026-05-27": "Idul adha", "2026-06-01": "Hari Lahir Pancasila",
+        "2026-05-14": "Kenaikan Isa Almasih", "2026-05-27": "Idul Adha", "2026-06-01": "Hari Lahir Pancasila",
         "2026-08-17": "Hari Kemerdekaan", "2026-12-25": "Natal"
     };
 
@@ -520,7 +327,7 @@
         const todayStatus = getShiftStatus(selectedShift, today.getFullYear(), today.getMonth(), today.getDate());
         const currentTheme = THEMES[todayStatus] || THEMES.Off;
 
-        document.getElementById("appBody").className = `text-slate-800 theme-transition h-full flex flex-col select-none overflow-hidden ${currentTheme.bg}`;
+        document.getElementById("appBody").className = `text-slate-800 theme-transition min-h-screen flex flex-col select-none ${currentTheme.bg}`;
 
         const themeColorMeta = document.querySelector('meta[name="theme-color"]');
         if (themeColorMeta) {
@@ -528,27 +335,27 @@
             themeColorMeta.setAttribute('content', colors[currentTheme.bg] || "#0d9488");
         }
 
-        // Today Card
+        // Render Today Card
         const todayCard = document.getElementById("todayCard");
-        todayCard.className = `absolute left-5 right-5 -top-10 rounded-[24px] p-5 shadow-lg border-4 border-white flex items-center justify-between z-30 theme-transition h-[100px] overflow-hidden ${currentTheme.card}`;
+        todayCard.className = `absolute left-4 right-4 -top-7 rounded-[20px] px-4 py-3 shadow-md border-4 border-white flex items-center justify-between z-20 theme-transition min-h-[80px] overflow-hidden ${currentTheme.card}`;
         todayCard.innerHTML = `
-            <div class="blob-soft absolute -top-8 -right-8 w-40 h-40 opacity-20"></div>
-            <div class="flex items-center gap-4 z-10 relative">
-                <div class="text-center border-r-2 border-slate-300/40 pr-4">
-                    <div class="text-[10px] uppercase font-semibold text-slate-400 tracking-widest">Hari Ini</div>
-                    <div class="text-[40px] font-bold leading-none mt-1 ${currentTheme.text}">${today.getDate()}</div>
+            <div class="blob-soft absolute -top-8 -right-8 w-36 h-36 opacity-20"></div>
+            <div class="flex items-center gap-3 z-10 relative">
+                <div class="text-center border-r-2 border-slate-300/40 pr-3">
+                    <div class="text-[9px] uppercase font-semibold text-slate-400 tracking-widest">Hari Ini</div>
+                    <div class="text-[32px] font-bold leading-none mt-0.5 ${currentTheme.text}">${today.getDate()}</div>
                 </div>
                 <div>
-                    <div class="text-[17px] font-bold tracking-wide ${currentTheme.text}">SHIFT ${currentTheme.name.toUpperCase()}</div>
-                    <div class="text-[13px] font-medium text-slate-500 mt-0.5">${currentTheme.time}</div>
+                    <div class="text-[15px] font-bold tracking-wide ${currentTheme.text}">SHIFT ${currentTheme.name.toUpperCase()}</div>
+                    <div class="text-[11px] font-medium text-slate-500 mt-0.5">${currentTheme.time}</div>
                 </div>
             </div>
-            <div class="absolute right-4 text-[55px] opacity-10 pointer-events-none ${currentTheme.text}">
+            <div class="absolute right-3 text-[42px] opacity-10 pointer-events-none ${currentTheme.text}">
                 <i class="fa-solid ${currentTheme.icon}"></i>
             </div>
         `;
 
-        // Calendar Dates
+        // Render Calendar Dates
         let html = "";
         for (let i = 0; i < firstDay; i++) {
             html += `<div></div>`;
@@ -579,12 +386,12 @@
             }
 
             html += `
-                <div class="border-0 ${bgCell} rounded-[14px] calendar-cell flex flex-col justify-between p-1.5 shadow-sm relative transition-all cursor-pointer">
-                    <div class="text-[15px] font-bold ${textColor} leading-none text-center mt-0.5">
+                <div class="border-0 ${bgCell} rounded-[12px] calendar-cell flex flex-col justify-between p-1 shadow-sm relative transition-all cursor-pointer">
+                    <div class="text-[13px] sm:text-[14px] font-bold ${textColor} leading-none text-center mt-0.5">
                         ${d}
                     </div>
-                    <div class="flex items-center justify-center w-full mt-auto mb-1">
-                        <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${capsuleClass}">
+                    <div class="flex items-center justify-center w-full mt-auto mb-0.5">
+                        <span class="text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${capsuleClass}">
                             ${statusName}
                         </span>
                     </div>
@@ -594,7 +401,7 @@
 
         document.getElementById("calendarDates").innerHTML = html;
 
-        // SPL List
+        // Render SPL / Holiday List
         const currentMonthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
         let holidayHtml = "";
         let foundHoliday = false;
@@ -602,27 +409,27 @@
         Object.entries(NATIONAL_HOLIDAYS).forEach(([date, name]) => {
             if (date.startsWith(currentMonthKey)) {
                 foundHoliday = true;
-                const dayOnly = parseInt(date.split("-")[2]);
+                const dayOnly = parseInt(date.split("-")[2], 10);
                 const shiftOnHoliday = getShiftStatus(selectedShift, year, month, dayOnly);
                 const isDapatSPL = (shiftOnHoliday === "P" || shiftOnHoliday === "M");
                 const shiftBadgeClass = shiftOnHoliday === "P" ? "badge-pagi" : shiftOnHoliday === "M" ? "badge-malam" : "badge-off";
 
                 const splBadge = isDapatSPL
-                    ? `<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full badge-dapat-spl"><i class="fa-solid fa-check mr-1 text-[7px]"></i>DAPAT SPL</span>`
-                    : `<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full badge-tidak-spl"><i class="fa-solid fa-circle-xmark mr-1 text-[7px]"></i>TIDAK SPL</span>`;
+                    ? `<span class="text-[9px] font-semibold px-2 py-0.5 rounded-full badge-dapat-spl"><i class="fa-solid fa-check mr-1 text-[7px]"></i>DAPAT SPL</span>`
+                    : `<span class="text-[9px] font-semibold px-2 py-0.5 rounded-full badge-tidak-spl"><i class="fa-solid fa-circle-xmark mr-1 text-[7px]"></i>TIDAK SPL</span>`;
 
                 holidayHtml += `
                     <div class="spl-list-item flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="bg-rose-100 text-rose-600 rounded-lg w-8 h-8 flex items-center justify-center text-[14px] font-bold shadow-sm">
+                        <div class="flex items-center gap-2">
+                            <div class="bg-rose-100 text-rose-600 rounded-lg w-6 h-6 flex items-center justify-center text-[11px] font-bold shadow-sm">
                                 ${dayOnly}
                             </div>
-                            <div class="text-[13px] font-semibold text-slate-700">
+                            <div class="text-[11px] font-semibold text-slate-700 truncate max-w-[120px] sm:max-w-none">
                                 ${name}
                             </div>
                         </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${shiftBadgeClass}">${shiftOnHoliday === "Off" ? "OFF" : shiftOnHoliday}</span>
+                        <div class="flex items-center gap-1">
+                            <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${shiftBadgeClass}">${shiftOnHoliday === "Off" ? "OFF" : shiftOnHoliday}</span>
                             ${splBadge}
                         </div>
                     </div>
@@ -632,8 +439,8 @@
 
         if (!foundHoliday) {
             holidayHtml = `
-                <div class="text-slate-400 text-[13px] font-medium italic py-3 text-center bg-white/60 rounded-xl border border-dashed border-slate-200">
-                    Bulan ini tidak ada Libur Nasional
+                <div class="text-slate-400 text-[11px] font-medium italic py-2 text-center bg-white/50 rounded-xl border border-dashed border-slate-200">
+                    Tidak ada Libur Nasional bulan ini
                 </div>
             `;
         }
@@ -641,11 +448,12 @@
         document.getElementById("holidayList").innerHTML = holidayHtml;
     }
 
+    // Event Listeners Navigasi
     document.getElementById("prevBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
     document.getElementById("nextBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
     document.getElementById("shiftSelect").addEventListener("change", (e) => { selectedShift = e.target.value; localStorage.setItem("selectedShift", selectedShift); renderCalendar(); });
 
-    // PWA
+    // PWA & Service Worker
     async function registerServiceWorker() {
         if ('serviceWorker' in navigator) {
             try {
@@ -714,6 +522,7 @@
     function showAndroidInstallGuide() { closeInstallPopup(); setTimeout(() => alert('📱 Cara Install:\n\n1. Tap menu (⋮) di Chrome\n2. Pilih "Install app"\n3. Konfirmasi dengan tap "Install"'), 300); }
     function showInstallGuide() { closeInstallPopup(); setTimeout(() => alert(/iPhone|iPad|iPod/i.test(navigator.userAgent) ? '📱 Cara Install di iPhone/iPad:\n\n1. Tap Share (📤)\n2. Scroll ke bawah\n3. Pilih "Add to Home Screen"\n4. Tap "Add"' : '📱 Cara Install:\n\nChrome/Android: Tap menu (⋮) → "Install app"\n\nDesktop: Klik icon install di address bar'), 300); }
 
+    // Init App
     document.getElementById("shiftSelect").value = selectedShift;
     renderDayNames();
     renderCalendar();
