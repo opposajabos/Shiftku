@@ -12,6 +12,7 @@
     <meta name="theme-color" content="#0d9488">
     <link rel="apple-touch-icon" href="img/icon.png">
     
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,237 +24,174 @@
             min-height: 100vh;
             font-family: 'Space Grotesk', system-ui, sans-serif;
             -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
         }
 
-        .fade-in {
-            animation: fadeIn 0.3s ease-out;
-        }
+        .fade-in { animation: fadeIn 0.25s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .theme-transition { transition: background-color 0.4s ease, color 0.4s ease; }
 
-        .theme-transition {
-            transition: background-color 0.4s ease, color 0.4s ease;
-        }
+        button { transition: transform 0.15s ease-out; }
+        button:active { transform: scale(0.95); }
 
-        button {
-            transition: transform 0.16s ease-out;
+        .calendar-cell { 
+            aspect-ratio: 1; 
+            transition: all 0.12s ease; 
         }
+        .calendar-cell:active { transform: scale(0.92); }
 
-        button:active {
-            transform: scale(0.95);
-        }
-
-        /* ===== LIQUID GLASS ===== */
-        .liquid-glass-light {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(15px) saturate(150%);
-            -webkit-backdrop-filter: blur(15px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 0 8px 30px -8px rgba(0, 20, 40, 0.08);
-        }
-
-        .blob-soft {
-            background: linear-gradient(145deg, #ffffff, #f0f3fe);
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            animation: morph 8s ease-in-out infinite;
-        }
-
-        @keyframes morph {
-            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-            50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-        }
-
-        .calendar-cell {
-            aspect-ratio: 1;
-            transition: all 0.15s ease;
-        }
-
-        .calendar-cell:active {
-            transform: scale(0.92);
-        }
-
-        /* Badge Styles */
         .badge-pagi { background: #0d9488; color: white; }
         .badge-malam { background: #1e3a5f; color: white; }
         .badge-off { background: #e8635a; color: white; }
-        .badge-dapat-spl { background: #dbeafe; color: #1e3a8a; border: 1px solid #3b82f6; }
-        .badge-tidak-spl { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+        .badge-cuti { background: #8b5cf6; color: white; }
 
-        .spl-list-item {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 14px;
-            padding: 0.6rem 0.8rem;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        }
-
-        .select-soft {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 40px;
-            padding: 0.35rem 2rem 0.35rem 1rem;
-            font-weight: 600;
+        .select-glass {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 9999px;
+            padding: 0.3rem 1.8rem 0.3rem 0.8rem;
+            font-weight: 700;
             font-size: 0.75rem;
             color: white;
             outline: none;
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 0.7rem center;
-            background-size: 0.8rem;
+            background-position: right 0.6rem center;
+            background-size: 0.75rem;
             cursor: pointer;
         }
 
         .scroll-hidden::-webkit-scrollbar { display: none; }
         .scroll-hidden { scrollbar-width: none; }
-
-        /* ===== POPUP INSTALL ===== */
-        #install-popup {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 360px;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 28px;
-            padding: 24px;
-            box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            z-index: 10000;
-            animation: slideUpPopup 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes slideUpPopup {
-            from { bottom: -100px; opacity: 0; transform: translateX(-50%) scale(0.9); }
-            to { bottom: 30px; opacity: 1; transform: translateX(-50%) scale(1); }
-        }
-
-        @keyframes slideDown {
-            from { bottom: 30px; opacity: 1; transform: translateX(-50%) scale(1); }
-            to { bottom: -100px; opacity: 0; transform: translateX(-50%) scale(0.9); }
-        }
-
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-
-        .popup-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-        .popup-icon {
-            width: 56px; height: 56px;
-            background: linear-gradient(145deg, #0d9488, #0f766e);
-            border-radius: 20px; display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 28px; box-shadow: 0 8px 20px -5px rgba(13, 148, 136, 0.4);
-        }
-        .popup-title { font-weight: 700; font-size: 1.2rem; color: #0d9488; line-height: 1.2; }
-        .popup-subtitle { font-size: 0.8rem; color: #64748b; margin-top: 3px; font-weight: 500; }
-        .popup-features { background: #f0fdfa; border-radius: 18px; padding: 14px; margin-bottom: 18px; }
-        .popup-feature-item { display: flex; align-items: center; gap: 10px; padding: 4px 0; font-size: 0.85rem; color: #1e293b; }
-        .popup-feature-item i { color: #0d9488; width: 20px; font-size: 0.9rem; }
-        .popup-buttons { display: flex; gap: 10px; }
-        .popup-btn {
-            flex: 1; padding: 12px 0; border-radius: 25px; font-weight: 600; font-size: 0.9rem;
-            border: none; cursor: pointer; transition: all 0.2s; font-family: 'Space Grotesk', sans-serif;
-        }
-        .popup-btn-primary { background: #0d9488; color: white; box-shadow: 0 8px 20px -5px rgba(13, 148, 136, 0.4); }
-        .popup-btn-secondary { background: #e2e8f0; color: #475569; }
-        .popup-close {
-            position: absolute; top: 10px; right: 10px; width: 26px; height: 26px; border-radius: 50%;
-            background: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 0.7rem; color: #64748b;
-        }
-        .popup-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); z-index: 9999; animation: fadeIn 0.3s ease;
-        }
-
-        #offline-notification {
-            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-            background: #1e293b; color: white; padding: 10px 20px; border-radius: 50px;
-            font-weight: 600; font-size: 0.8rem; box-shadow: 0 8px 20px rgba(0,0,0,0.25); z-index: 9998;
-        }
-
-        /* ===== MEDIA QUERIES PENYESUAIAN HP KECIL ===== */
-        @media (max-width: 380px) {
-            .calendar-cell { border-radius: 10px !important; }
-            .calendar-cell .text-\[13px\] { font-size: 11px !important; }
-            .calendar-cell .text-\[9px\] { font-size: 8px !important; padding-left: 4px !important; padding-right: 4px !important; }
-            #todayCard { padding: 0.6rem 0.8rem !important; }
-            #todayCard .text-\[32px\] { font-size: 26px !important; }
-            #todayCard .text-\[15px\] { font-size: 13px !important; }
-        }
     </style>
 </head>
 
-<body id="appBody" class="text-slate-800 theme-transition bg-[#0d9488] min-h-screen flex flex-col select-none">
+<body id="appBody" class="text-slate-800 theme-transition bg-[#0d9488] min-h-screen select-none relative">
 
-<div class="min-h-screen flex flex-col pt-4 max-w-2xl mx-auto w-full relative">
+<!-- Toast Notification Container -->
+<div id="toastNotification" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-sm bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none -translate-y-4">
+    <div id="toastIcon" class="text-teal-400 text-lg">
+        <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <div id="toastMessage" class="text-xs font-semibold flex-1"></div>
+</div>
 
-    <!-- Header Navigation -->
-    <div class="px-5 flex items-center justify-between text-white relative z-10 mb-3">
-        <button id="prevBtn" aria-label="Bulan Sebelumnya" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 active:scale-95 transition backdrop-blur-sm hover:bg-white/20">
-            <i class="fa-solid fa-chevron-left text-[15px]"></i>
-        </button>
+<!-- Wrapper Utama Mobile Full-Width -->
+<div class="w-full max-w-md mx-auto min-h-screen flex flex-col pt-3">
 
-        <div class="flex flex-col items-center">
-            <div id="monthYear" class="text-[18px] sm:text-[20px] uppercase font-bold tracking-widest leading-none mb-1.5"></div>
-            <select id="shiftSelect" class="select-soft">
-                <option value="A" class="text-slate-800">SHIFT A</option>
-                <option value="B" class="text-slate-800">SHIFT B</option>
-                <option value="C" class="text-slate-800">SHIFT C</option>
-            </select>
+    <!-- Top Bar: Tab Switcher (Kalender & Cuti) & Shift Selector -->
+    <div class="px-3 mb-3 flex items-center justify-between text-white z-10 gap-2">
+        <div class="flex items-center gap-1 bg-white/15 backdrop-blur-md p-1 rounded-2xl">
+            <button id="tabCalendarBtn" onclick="switchTab('calendar')" class="px-4 py-1.5 rounded-xl text-xs font-bold transition bg-white text-slate-800 shadow-sm whitespace-nowrap">
+                <i class="fa-solid fa-calendar-days mr-1"></i> Kalender
+            </button>
+            <button id="tabLeaveBtn" onclick="switchTab('leave')" class="px-4 py-1.5 rounded-xl text-xs font-bold transition text-white hover:bg-white/10 whitespace-nowrap">
+                <i class="fa-solid fa-plane-departure mr-1"></i> Cuti
+            </button>
         </div>
 
-        <button id="nextBtn" aria-label="Bulan Berikutnya" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 active:scale-95 transition backdrop-blur-sm hover:bg-white/20">
-            <i class="fa-solid fa-chevron-right text-[15px]"></i>
+        <select id="shiftSelect" class="select-glass">
+            <option value="A" class="text-slate-800">SHIFT A</option>
+            <option value="B" class="text-slate-800">SHIFT B</option>
+            <option value="C" class="text-slate-800">SHIFT C</option>
+        </select>
+    </div>
+
+    <!-- Navigation Bulan (Tab Kalender) -->
+    <div id="monthNav" class="px-4 flex items-center justify-between text-white mb-3">
+        <button id="prevBtn" aria-label="Bulan Sebelumnya" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/15 active:scale-95 transition backdrop-blur-sm">
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+        </button>
+
+        <div id="monthYear" class="text-base font-bold tracking-widest uppercase"></div>
+
+        <button id="nextBtn" aria-label="Bulan Berikutnya" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/15 active:scale-95 transition backdrop-blur-sm">
+            <i class="fa-solid fa-chevron-right text-xs"></i>
         </button>
     </div>
 
-    <!-- Main Content Container -->
-    <div class="bg-slate-50 rounded-t-[32px] flex-1 flex flex-col relative mt-8 shadow-[0_-10px_30px_rgba(0,0,0,0.15)] pb-6">
+    <!-- Sheet Konten Utama -->
+    <div class="bg-slate-50 rounded-t-[30px] flex-1 flex flex-col justify-between relative mt-5 shadow-[0_-10px_30px_rgba(0,0,0,0.12)]">
 
-        <!-- Today Info Card -->
-        <div id="todayCard" class="absolute left-4 right-4 -top-7 rounded-[20px] px-4 py-3 shadow-md border-4 border-white flex items-center justify-between z-20 theme-transition min-h-[80px] overflow-hidden">
-            <div class="blob-soft absolute -top-8 -right-8 w-36 h-36 opacity-20"></div>
-        </div>
+        <!-- TAB 1: KALENDER UTAMA -->
+        <div id="calendarTab" class="flex flex-col relative w-full h-full flex-1 justify-between">
+            <div>
+                <!-- Hero Card (Hari Ini) -->
+                <div id="todayCard" class="mx-4 -mt-6 rounded-2xl px-4 py-3 shadow-md border-2 border-white flex items-center justify-between z-20 theme-transition min-h-[80px] overflow-hidden"></div>
 
-        <!-- Inner Content Area -->
-        <div class="pt-14 px-4 flex flex-col">
-            <div id="calendarTab" class="flex flex-col">
-                
-                <!-- Days Header -->
-                <div id="daysName" class="grid grid-cols-7 gap-1 text-center my-1.5 text-slate-400 font-semibold text-[11px] tracking-wider">
+                <div class="pt-4 px-3 flex flex-col w-full gap-3">
+                    <!-- Header Nama Hari -->
+                    <div id="daysName" class="grid grid-cols-7 gap-1 text-center text-slate-400 font-bold text-[11px] tracking-wider"></div>
+                    
+                    <!-- Grid Tanggal -->
+                    <div id="calendarDates" class="grid grid-cols-7 gap-1.5 fade-in text-slate-700 w-full"></div>
                 </div>
+            </div>
 
-                <!-- Calendar Grid -->
-                <div id="calendarDates" class="grid grid-cols-7 gap-1.5 fade-in text-slate-700 pb-2">
-                </div>
-
-                <!-- Holiday & SPL Section -->
-                <div class="mt-3 liquid-glass-light rounded-[18px] p-3 flex flex-col">
-                    <div class="text-slate-400 text-[10px] font-semibold uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
-                        <i class="fa-solid fa-umbrella-beach text-[#0d9488]"></i> Libur Nasional & SPL
+            <!-- Card Libur & SPL (Nempel Bawah) -->
+            <div class="mt-6 px-3 pb-4">
+                <div class="bg-white rounded-2xl p-3.5 flex flex-col border border-slate-200/80 shadow-md">
+                    <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center justify-between">
+                        <span class="flex items-center gap-1.5">
+                            <i class="fa-solid fa-umbrella-beach text-[#0d9488]"></i> Libur Nasional & SPL Bulan Ini
+                        </span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#0d9488]"></span>
                     </div>
-                    <div id="holidayList" class="flex flex-col gap-1.5 overflow-y-auto scroll-hidden pr-0.5">
-                    </div>
+                    <div id="holidayList" class="flex flex-col gap-2"></div>
                 </div>
-
             </div>
         </div>
+
+        <!-- TAB 2: PLANNER CUTI -->
+        <div id="leaveTab" class="hidden pt-6 px-4 flex flex-col fade-in w-full pb-8">
+            <h2 class="text-base font-bold text-slate-800 mb-0.5 flex items-center gap-2">
+                <i class="fa-solid fa-calculator text-[#0d9488]"></i> Planner & Pengajuan Cuti
+            </h2>
+            <p class="text-xs text-slate-500 mb-3">Hitung akhir cuti dan hari pertama masuk kerja secara otomatis.</p>
+
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-3 mb-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Jenis Cuti</label>
+                    <select id="leaveType" onchange="toggleLeaveDurationInput()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 outline-none focus:border-[#0d9488]">
+                        <option value="family">Family Visit (12 Hari)</option>
+                        <option value="annual">Cuti Tahunan (1-6 Hari)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Tanggal Mulai Cuti</label>
+                    <input type="date" id="inputLeaveStartDate" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 outline-none focus:border-[#0d9488]">
+                </div>
+
+                <div id="annualDurationContainer" class="hidden">
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Durasi (Hari)</label>
+                    <input type="number" id="inputLeaveDuration" min="1" max="6" value="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 outline-none focus:border-[#0d9488]">
+                </div>
+
+                <button onclick="calculateAndSaveLeave()" class="w-full bg-[#0d9488] text-white py-2.5 rounded-xl font-bold text-xs shadow-md active:scale-95 transition mt-1">
+                    <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan & Pasang Di Kalender
+                </button>
+            </div>
+
+            <span class="text-xs font-bold text-slate-700 mb-2 block">Cuti Terdaftar</span>
+            <div id="activeLeaveList" class="flex flex-col gap-2 pb-4"></div>
+        </div>
+
     </div>
 </div>
 
 <script>
     const MONTH_NAMES = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     const DAY_NAMES = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+    const FULL_DAY_NAMES = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+    // Container data libur nasional (akan di-load via Fetch)
+    let nationalHolidays = {};
 
     const SHIFT_PATTERNS = {
         A: ["M", "Off", "P"],
@@ -262,45 +200,62 @@
     };
 
     const THEMES = {
-        P: {
-            bg: "bg-[#0d9488]",
-            card: "bg-[#ccfbf1]",
-            text: "text-[#0f766e]",
-            name: "Pagi",
-            time: "08:00 - 16:00",
-            icon: "fa-sun",
-            capsule: "badge-pagi",
-        },
-        M: {
-            bg: "bg-[#1e3a5f]",
-            card: "bg-[#e0f2fe]",
-            text: "text-[#1e3a5f]",
-            name: "Malam",
-            time: "16:00 - 24:00",
-            icon: "fa-moon",
-            capsule: "badge-malam",
-        },
-        Off: {
-            bg: "bg-[#e8635a]",
-            card: "bg-[#fee2e2]",
-            text: "text-[#991b1b]",
-            name: "Libur",
-            time: "Tidak ada jadwal",
-            icon: "fa-bed",
-            capsule: "badge-off",
-        }
-    };
-
-    const NATIONAL_HOLIDAYS = {
-        "2026-01-01": "Tahun Baru", "2026-02-16": "Isra Mikraj", "2026-03-19": "Nyepi",
-        "2026-03-31": "Idul Fitri", "2026-04-01": "Idul Fitri", "2026-05-01": "Hari Buruh",
-        "2026-05-14": "Kenaikan Isa Almasih", "2026-05-27": "Idul Adha", "2026-06-01": "Hari Lahir Pancasila",
-        "2026-08-17": "Hari Kemerdekaan", "2026-12-25": "Natal"
+        P: { bg: "bg-[#0d9488]", card: "bg-[#ccfbf1]", text: "text-[#0f766e]", name: "Pagi", time: "07:30 - 19:30", icon: "fa-sun", capsule: "badge-pagi" },
+        M: { bg: "bg-[#1e3a5f]", card: "bg-[#e0f2fe]", text: "text-[#1e3a5f]", name: "Malam", time: "19:30 - 07:30", icon: "fa-moon", capsule: "badge-malam" },
+        Off: { bg: "bg-[#e8635a]", card: "bg-[#fee2e2]", text: "text-[#991b1b]", name: "Libur", time: "Tidak ada jadwal", icon: "fa-bed", capsule: "badge-off" }
     };
 
     let currentDate = new Date();
     let selectedShift = localStorage.getItem("selectedShift") || "A";
     const BASE_DATE_UTC = Date.UTC(2025, 4, 25);
+
+    // Fungsi Fetch JSON Libur Nasional
+    async function loadHolidays() {
+        try {
+            const response = await fetch('holidays.json');
+            if (!response.ok) throw new Error('Gagal memuat data libur');
+            nationalHolidays = await response.json();
+        } catch (error) {
+            console.error("Error loading holidays:", error);
+            nationalHolidays = {};
+        } finally {
+            renderCalendar();
+        }
+    }
+
+    function showToast(message, type = "success") {
+        const toast = document.getElementById("toastNotification");
+        const msgEl = document.getElementById("toastMessage");
+        const iconEl = document.getElementById("toastIcon");
+
+        msgEl.textContent = message;
+        if (type === "danger") {
+            iconEl.className = "text-rose-400 text-lg";
+            iconEl.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i>`;
+        } else {
+            iconEl.className = "text-teal-400 text-lg";
+            iconEl.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
+        }
+
+        toast.classList.remove("opacity-0", "pointer-events-none", "-translate-y-4");
+        toast.classList.add("opacity-100", "translate-y-0");
+
+        setTimeout(() => {
+            toast.classList.remove("opacity-100", "translate-y-0");
+            toast.classList.add("opacity-0", "pointer-events-none", "-translate-y-4");
+        }, 3200);
+    }
+
+    function getSavedLeaves() {
+        const saved = localStorage.getItem("userLeaves");
+        return saved ? JSON.parse(saved) : [];
+    }
+
+    function saveLeaves(leavesArray) {
+        localStorage.setItem("userLeaves", JSON.stringify(leavesArray));
+        renderCalendar();
+        renderManageLeaveList();
+    }
 
     function getShiftStatus(shift, year, month, day) {
         const targetUTC = Date.UTC(year, month, day);
@@ -309,11 +264,41 @@
         return SHIFT_PATTERNS[shift][cycle];
     }
 
+    function switchTab(tab) {
+        const calTab = document.getElementById("calendarTab");
+        const leaveTab = document.getElementById("leaveTab");
+        const monthNav = document.getElementById("monthNav");
+
+        const btnCal = document.getElementById("tabCalendarBtn");
+        const btnLeave = document.getElementById("tabLeaveBtn");
+
+        const activeClass = "px-4 py-1.5 rounded-xl text-xs font-bold transition bg-white text-slate-800 shadow-sm whitespace-nowrap";
+        const inactiveClass = "px-4 py-1.5 rounded-xl text-xs font-bold transition text-white hover:bg-white/10 whitespace-nowrap";
+
+        calTab.classList.add("hidden");
+        leaveTab.classList.add("hidden");
+        monthNav.classList.add("hidden");
+
+        btnCal.className = inactiveClass;
+        btnLeave.className = inactiveClass;
+
+        if (tab === 'calendar') {
+            calTab.classList.remove("hidden");
+            monthNav.classList.remove("hidden");
+            btnCal.className = activeClass;
+        } else if (tab === 'leave') {
+            leaveTab.classList.remove("hidden");
+            btnLeave.className = activeClass;
+            renderManageLeaveList();
+        }
+    }
+
     function renderDayNames() {
         document.getElementById("daysName").innerHTML = DAY_NAMES.map(day => `<div>${day}</div>`).join("");
     }
 
     function renderCalendar() {
+        const leaves = getSavedLeaves();
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         const today = new Date();
@@ -326,87 +311,79 @@
 
         const todayStatus = getShiftStatus(selectedShift, today.getFullYear(), today.getMonth(), today.getDate());
         const currentTheme = THEMES[todayStatus] || THEMES.Off;
+        const todayDayName = FULL_DAY_NAMES[today.getDay()];
 
-        document.getElementById("appBody").className = `text-slate-800 theme-transition min-h-screen flex flex-col select-none ${currentTheme.bg}`;
+        document.getElementById("appBody").className = `text-slate-800 theme-transition min-h-screen select-none relative ${currentTheme.bg}`;
 
-        const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-        if (themeColorMeta) {
-            const colors = { "bg-[#0d9488]": "#0d9488", "bg-[#1e3a5f]": "#1e3a5f", "bg-[#e8635a]": "#e8635a" };
-            themeColorMeta.setAttribute('content', colors[currentTheme.bg] || "#0d9488");
-        }
-
-        // Render Today Card
+        // Hero Card Today
         const todayCard = document.getElementById("todayCard");
-        todayCard.className = `absolute left-4 right-4 -top-7 rounded-[20px] px-4 py-3 shadow-md border-4 border-white flex items-center justify-between z-20 theme-transition min-h-[80px] overflow-hidden ${currentTheme.card}`;
+        todayCard.className = `mx-4 -mt-6 rounded-2xl px-4 py-3 shadow-md border-2 border-white flex items-center justify-between z-20 theme-transition min-h-[80px] overflow-hidden ${currentTheme.card}`;
         todayCard.innerHTML = `
-            <div class="blob-soft absolute -top-8 -right-8 w-36 h-36 opacity-20"></div>
-            <div class="flex items-center gap-3 z-10 relative">
-                <div class="text-center border-r-2 border-slate-300/40 pr-3">
-                    <div class="text-[9px] uppercase font-semibold text-slate-400 tracking-widest">Hari Ini</div>
-                    <div class="text-[32px] font-bold leading-none mt-0.5 ${currentTheme.text}">${today.getDate()}</div>
+            <div class="flex items-center gap-3">
+                <div class="text-center border-r border-slate-300/60 pr-3">
+                    <div class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Hari Ini</div>
+                    <div class="text-2xl font-bold leading-none mt-0.5 ${currentTheme.text}">${today.getDate()}</div>
+                    <div class="text-[10px] font-bold uppercase tracking-wide ${currentTheme.text} mt-0.5">${todayDayName}</div>
                 </div>
                 <div>
-                    <div class="text-[15px] font-bold tracking-wide ${currentTheme.text}">SHIFT ${currentTheme.name.toUpperCase()}</div>
-                    <div class="text-[11px] font-medium text-slate-500 mt-0.5">${currentTheme.time}</div>
+                    <div class="text-sm font-bold tracking-wide ${currentTheme.text}">SHIFT ${currentTheme.name.toUpperCase()}</div>
+                    <div class="text-[11px] font-medium text-slate-500">${currentTheme.time}</div>
                 </div>
             </div>
-            <div class="absolute right-3 text-[42px] opacity-10 pointer-events-none ${currentTheme.text}">
-                <i class="fa-solid ${currentTheme.icon}"></i>
-            </div>
+            <i class="fa-solid ${currentTheme.icon} text-3xl opacity-20 ${currentTheme.text}"></i>
         `;
 
-        // Render Calendar Dates
+        // Map Cuti
+        const leaveDatesMap = {};
+        leaves.forEach(l => {
+            let cur = new Date(l.startDate);
+            const end = new Date(l.endDate);
+            while (cur <= end) {
+                const k = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, "0")}-${String(cur.getDate()).padStart(2, "0")}`;
+                leaveDatesMap[k] = l.type === 'family' ? 'FV' : 'CUTI';
+                cur.setDate(cur.getDate() + 1);
+            }
+        });
+
+        // Grid Kalender
         let html = "";
-        for (let i = 0; i < firstDay; i++) {
-            html += `<div></div>`;
-        }
+        for (let i = 0; i < firstDay; i++) { html += `<div></div>`; }
 
         for (let d = 1; d <= daysInMonth; d++) {
             const status = getShiftStatus(selectedShift, year, month, d);
             const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-            const isHoliday = !!NATIONAL_HOLIDAYS[dateKey];
+            const isHoliday = !!nationalHolidays[dateKey];
+            const isLeave = leaveDatesMap[dateKey];
             const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
 
             const statusTheme = THEMES[status] || THEMES.Off;
-            const statusName = status === "Off" ? "OFF" : status;
+            let statusName = status === "Off" ? "OFF" : status;
 
             let textColor = "text-slate-700";
             let bgCell = "bg-white";
             let capsuleClass = statusTheme.capsule;
 
-            if (isHoliday) {
-                bgCell = "bg-rose-50";
-                textColor = "text-rose-600";
-            }
-
-            if (isToday) {
-                bgCell = currentTheme.bg;
-                textColor = "text-white";
-                capsuleClass = "bg-white/25 text-white";
-            }
+            if (isHoliday) { bgCell = "bg-rose-50"; textColor = "text-rose-600"; }
+            if (isLeave) { bgCell = "bg-purple-50"; textColor = "text-purple-700"; statusName = isLeave; capsuleClass = "badge-cuti"; }
+            if (isToday) { bgCell = currentTheme.bg; textColor = "text-white"; capsuleClass = "bg-white/30 text-white"; }
 
             html += `
-                <div class="border-0 ${bgCell} rounded-[12px] calendar-cell flex flex-col justify-between p-1 shadow-sm relative transition-all cursor-pointer">
-                    <div class="text-[13px] sm:text-[14px] font-bold ${textColor} leading-none text-center mt-0.5">
-                        ${d}
-                    </div>
-                    <div class="flex items-center justify-center w-full mt-auto mb-0.5">
-                        <span class="text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${capsuleClass}">
-                            ${statusName}
-                        </span>
+                <div class="${bgCell} rounded-xl calendar-cell flex flex-col justify-between p-1 shadow-sm relative">
+                    <div class="text-xs font-bold ${textColor} text-center mt-0.5">${d}</div>
+                    <div class="w-full mt-auto mb-0.5 text-center">
+                        <span class="text-[8px] font-bold px-1 py-0.5 rounded-full block ${capsuleClass}">${statusName}</span>
                     </div>
                 </div>
             `;
         }
-
         document.getElementById("calendarDates").innerHTML = html;
 
-        // Render SPL / Holiday List
+        // Info Libur & SPL Bulan Ini
         const currentMonthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
         let holidayHtml = "";
         let foundHoliday = false;
 
-        Object.entries(NATIONAL_HOLIDAYS).forEach(([date, name]) => {
+        Object.entries(nationalHolidays).sort().forEach(([date, name]) => {
             if (date.startsWith(currentMonthKey)) {
                 foundHoliday = true;
                 const dayOnly = parseInt(date.split("-")[2], 10);
@@ -415,21 +392,17 @@
                 const shiftBadgeClass = shiftOnHoliday === "P" ? "badge-pagi" : shiftOnHoliday === "M" ? "badge-malam" : "badge-off";
 
                 const splBadge = isDapatSPL
-                    ? `<span class="text-[9px] font-semibold px-2 py-0.5 rounded-full badge-dapat-spl"><i class="fa-solid fa-check mr-1 text-[7px]"></i>DAPAT SPL</span>`
-                    : `<span class="text-[9px] font-semibold px-2 py-0.5 rounded-full badge-tidak-spl"><i class="fa-solid fa-circle-xmark mr-1 text-[7px]"></i>TIDAK SPL</span>`;
+                    ? `<span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200"><i class="fa-solid fa-check mr-0.5"></i>DAPAT SPL</span>`
+                    : `<span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200"><i class="fa-solid fa-xmark mr-0.5"></i>TIDAK SPL</span>`;
 
                 holidayHtml += `
-                    <div class="spl-list-item flex items-center justify-between">
+                    <div class="bg-slate-50/80 rounded-xl p-2 border border-slate-100 flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <div class="bg-rose-100 text-rose-600 rounded-lg w-6 h-6 flex items-center justify-center text-[11px] font-bold shadow-sm">
-                                ${dayOnly}
-                            </div>
-                            <div class="text-[11px] font-semibold text-slate-700 truncate max-w-[120px] sm:max-w-none">
-                                ${name}
-                            </div>
+                            <div class="bg-rose-100 text-rose-600 rounded-lg w-6 h-6 flex items-center justify-center text-xs font-bold">${dayOnly}</div>
+                            <div class="text-xs font-semibold text-slate-700 truncate max-w-[120px]">${name}</div>
                         </div>
                         <div class="flex items-center gap-1">
-                            <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${shiftBadgeClass}">${shiftOnHoliday === "Off" ? "OFF" : shiftOnHoliday}</span>
+                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full ${shiftBadgeClass}">${shiftOnHoliday === "Off" ? "OFF" : shiftOnHoliday}</span>
                             ${splBadge}
                         </div>
                     </div>
@@ -438,102 +411,102 @@
         });
 
         if (!foundHoliday) {
-            holidayHtml = `
-                <div class="text-slate-400 text-[11px] font-medium italic py-2 text-center bg-white/50 rounded-xl border border-dashed border-slate-200">
-                    Tidak ada Libur Nasional bulan ini
-                </div>
-            `;
+            holidayHtml = `<div class="text-slate-400 text-xs italic py-2 text-center bg-slate-50/50 rounded-xl border border-dashed border-slate-200">Tidak ada Libur Nasional bulan ini</div>`;
         }
-
         document.getElementById("holidayList").innerHTML = holidayHtml;
     }
 
-    // Event Listeners Navigasi
+    // Logic Cuti
+    function toggleLeaveDurationInput() {
+        const type = document.getElementById("leaveType").value;
+        const container = document.getElementById("annualDurationContainer");
+        if (type === "annual") container.classList.remove("hidden");
+        else container.classList.add("hidden");
+    }
+
+    function calculateAndSaveLeave() {
+        const type = document.getElementById("leaveType").value;
+        const startDateVal = document.getElementById("inputLeaveStartDate").value;
+        let duration = type === "family" ? 12 : parseInt(document.getElementById("inputLeaveDuration").value, 10);
+
+        if (!startDateVal || isNaN(duration)) {
+            showToast("Pilih tanggal mulai & durasi cuti!", "danger");
+            return;
+        }
+
+        const startDate = new Date(startDateVal);
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + (duration - 1));
+
+        const returnDate = new Date(endDate);
+        returnDate.setDate(endDate.getDate() + 1);
+
+        const returnShift = getShiftStatus(selectedShift, returnDate.getFullYear(), returnDate.getMonth(), returnDate.getDate());
+        const returnTheme = THEMES[returnShift] || THEMES.Off;
+
+        const newLeave = {
+            id: Date.now(),
+            type: type,
+            typeName: type === "family" ? "Family Visit (12 Hari)" : `Cuti Tahunan (${duration} Hari)`,
+            startDate: startDate.toISOString().split('T')[0],
+            endDate: endDate.toISOString().split('T')[0],
+            returnDate: returnDate.toISOString().split('T')[0],
+            returnDayName: FULL_DAY_NAMES[returnDate.getDay()],
+            returnShiftName: returnTheme.name,
+            returnTime: returnTheme.time
+        };
+
+        const leaves = getSavedLeaves();
+        leaves.push(newLeave);
+        saveLeaves(leaves);
+
+        showToast(`Cuti tersimpan! Masuk lagi: ${newLeave.returnDayName}, ${newLeave.returnDate}`);
+    }
+
+    function renderManageLeaveList() {
+        const leaves = getSavedLeaves();
+        let html = "";
+
+        if (leaves.length === 0) {
+            html = `<div class="text-slate-400 text-xs italic text-center py-4 bg-white rounded-xl border border-dashed border-slate-200">Belum ada jadwal cuti yang diajukan.</div>`;
+        } else {
+            leaves.forEach(l => {
+                html += `
+                    <div class="bg-white p-3 rounded-2xl border border-slate-100 flex flex-col gap-1 shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md">${l.typeName}</span>
+                            <button onclick="deleteLeave(${l.id})" class="text-rose-500 text-xs p-1 hover:bg-rose-50 rounded-lg">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                        <div class="text-xs text-slate-700 font-semibold mt-1">📅 ${l.startDate} s/d ${l.endDate}</div>
+                        <div class="text-[11px] text-teal-700 font-bold bg-teal-50 p-2 rounded-xl mt-1 flex items-center justify-between">
+                            <span>🛠️ Masuk Kembali:</span>
+                            <span>${l.returnDayName}, ${l.returnDate} (${l.returnShiftName})</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        document.getElementById("activeLeaveList").innerHTML = html;
+    }
+
+    function deleteLeave(id) {
+        let leaves = getSavedLeaves();
+        leaves = leaves.filter(l => l.id !== id);
+        saveLeaves(leaves);
+        showToast("Jadwal cuti telah dihapus.");
+    }
+
+    // Event Handlers
     document.getElementById("prevBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
     document.getElementById("nextBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
     document.getElementById("shiftSelect").addEventListener("change", (e) => { selectedShift = e.target.value; localStorage.setItem("selectedShift", selectedShift); renderCalendar(); });
 
-    // PWA & Service Worker
-    async function registerServiceWorker() {
-        if ('serviceWorker' in navigator) {
-            try {
-                const registration = await navigator.serviceWorker.register('./service-worker.js', { scope: './' });
-                registration.addEventListener('updatefound', () => {
-                    const newWorker = registration.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'activated' && confirm('Update tersedia! Reload sekarang?')) window.location.reload();
-                    });
-                });
-            } catch (error) {}
-        }
-    }
-
-    function checkOnlineStatus() {
-        if (!navigator.onLine) showOfflineNotification();
-        window.addEventListener('online', hideOfflineNotification);
-        window.addEventListener('offline', showOfflineNotification);
-    }
-
-    function showOfflineNotification() {
-        if (document.getElementById('offline-notification')) return;
-        const n = document.createElement('div');
-        n.id = 'offline-notification';
-        n.textContent = '📴 Anda sedang offline - Data tersimpan';
-        document.body.appendChild(n);
-        setTimeout(hideOfflineNotification, 3000);
-    }
-
-    function hideOfflineNotification() {
-        const n = document.getElementById('offline-notification');
-        if (n) n.remove();
-    }
-
-    function showInstallPopup() {
-        if (localStorage.getItem('shiftku_install_popup_shown') === 'true') return;
-        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) return;
-
-        const isAndroid = /Android/i.test(navigator.userAgent);
-        const overlay = document.createElement('div');
-        overlay.className = 'popup-overlay';
-        document.body.appendChild(overlay);
-
-        const popup = document.createElement('div');
-        popup.id = 'install-popup';
-        popup.innerHTML = isAndroid ? `
-            <div class="popup-close" onclick="closeInstallPopup()"><i class="fa-solid fa-times"></i></div>
-            <div class="popup-header"><div class="popup-icon"><i class="fa-brands fa-android"></i></div><div><div class="popup-title">Install ShiftKu</div><div class="popup-subtitle">Akses lebih cepat & offline</div></div></div>
-            <div class="popup-features"><div class="popup-feature-item"><i class="fa-solid fa-bolt"></i><span>Akses cepat dari home screen</span></div><div class="popup-feature-item"><i class="fa-solid fa-wifi-slash"></i><span>Bisa digunakan offline</span></div></div>
-            <div class="popup-buttons"><button class="popup-btn popup-btn-secondary" onclick="closeInstallPopup()">Nanti</button><button class="popup-btn popup-btn-primary" onclick="showAndroidInstallGuide()">Install</button></div>` : `
-            <div class="popup-close" onclick="closeInstallPopup()"><i class="fa-solid fa-times"></i></div>
-            <div class="popup-header"><div class="popup-icon"><i class="fa-solid fa-mobile-screen"></i></div><div><div class="popup-title">Install ShiftKu</div><div class="popup-subtitle">Tambahkan ke Home Screen</div></div></div>
-            <div class="popup-features"><div class="popup-feature-item"><i class="fa-solid fa-bolt"></i><span>Akses lebih cepat</span></div><div class="popup-feature-item"><i class="fa-solid fa-wifi-slash"></i><span>Mode offline</span></div></div>
-            <div class="popup-buttons"><button class="popup-btn popup-btn-secondary" onclick="closeInstallPopup()">Nanti</button><button class="popup-btn popup-btn-primary" onclick="showInstallGuide()">Lihat Cara</button></div>`;
-        document.body.appendChild(popup);
-        localStorage.setItem('shiftku_install_popup_shown', 'true');
-    }
-
-    function closeInstallPopup() {
-        const popup = document.getElementById('install-popup');
-        const overlay = document.querySelector('.popup-overlay');
-        if (popup) { popup.style.animation = 'slideDown 0.3s ease forwards'; setTimeout(() => popup.remove(), 300); }
-        if (overlay) { overlay.style.animation = 'fadeOut 0.3s ease forwards'; setTimeout(() => overlay.remove(), 300); }
-    }
-
-    function showAndroidInstallGuide() { closeInstallPopup(); setTimeout(() => alert('📱 Cara Install:\n\n1. Tap menu (⋮) di Chrome\n2. Pilih "Install app"\n3. Konfirmasi dengan tap "Install"'), 300); }
-    function showInstallGuide() { closeInstallPopup(); setTimeout(() => alert(/iPhone|iPad|iPod/i.test(navigator.userAgent) ? '📱 Cara Install di iPhone/iPad:\n\n1. Tap Share (📤)\n2. Scroll ke bawah\n3. Pilih "Add to Home Screen"\n4. Tap "Add"' : '📱 Cara Install:\n\nChrome/Android: Tap menu (⋮) → "Install app"\n\nDesktop: Klik icon install di address bar'), 300); }
-
     // Init App
     document.getElementById("shiftSelect").value = selectedShift;
     renderDayNames();
-    renderCalendar();
-
-    document.addEventListener('DOMContentLoaded', () => {
-        registerServiceWorker();
-        checkOnlineStatus();
-        if (!window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone) {
-            setTimeout(showInstallPopup, 2000);
-        }
-    });
+    loadHolidays(); // Memuat data JSON lalu merender kalender
 </script>
 </body>
 </html>
